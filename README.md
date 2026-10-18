@@ -1,1 +1,1 @@
-# HiNotes
+# Granular
