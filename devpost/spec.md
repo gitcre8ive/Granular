@@ -50,6 +50,7 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 
 - Use the supplied concepts as visual references: [screen 1](./images/granular_poc_screen1.svg) and [screen 2](./images/granular_poc_screen2.svg). They are references, not app runtime dependencies.
 - Keep the UI spacious and editor-first, with the app name at upper left, Help at upper right, title field above a large centered editing surface, the palette at the left, and the horizontal targeting bar resting above the editor box. The user can drag it down into the box and align pin tips just above a text line.
+- Fit the desktop layout within the reference 1440×667 viewport without page-level scrolling; longer note content scrolls inside the editor.
 - List Ambatah first for the app name, followed by system sans-serif fallbacks. No font file is currently in the project; do not fetch a font from an external source.
 - Keep the default yellow, the chosen color swatches, and the inactive red pin-end zones visually distinct. Show blue borders around the currently targeted characters before applying a highlight.
 - Animate highlight application as a short, visible progression from the first pin toward the second. Keep the final mark persistent after the animation.

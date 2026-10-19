@@ -58,6 +58,9 @@ Build mode: fast
 
 ## Final Review
 
+- [ ] Place decrement/increment centered above the moving bar and align the color and None actions in a row to its right.
+- [ ] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
+- [ ] Center and fit the None and Add pointer bar labels inside their buttons.
 - [ ] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 
 ## Code Tour and App Map
@@ -79,6 +82,7 @@ Activity mode: [live app, static fallback, focused alternative, prior practice, 
 - Narrowed the pin inactive zones to match the editor's responsive text insets — hands-on feedback showed that fixed-width end zones blocked characters near the start and end of a line.
 - Added a measured-character fallback when the editor's point lookup cannot resolve a pin position near the text edges — retesting showed that the narrower red zones fixed the boundary size but did not yet activate every edge character.
 - Reduced inactive zones to narrow 8px strips, letting the active span extend into the editor's text insets; hid horizontal overflow while retaining vertical scrolling — retesting still found several edge characters unreachable, and the learner requested no horizontal scrollbar.
+- Fit the editor to the reference desktop viewport and refined button sizing/alignment — final-review feedback requested no page scrollbar at 1440×667, a centered smaller None label, and a centered, more compact Add pointer bar button.
 - Changed character picking to compare the pin against actual browser text-range rectangles for each grapheme — the learner confirmed the narrow zones and no-horizontal-scroll behavior, but edge characters still did not activate, indicating coordinate-to-character mapping remained the issue.
 - Returned to ProseMirror caret-coordinate rectangles after the DOM text-range change stopped all character tracking; moved the bar into a dedicated space above the editor box, shortened the pin needle to a clear target tip, and limited character feedback to pin tips just above a text line — learner feedback showed the bar should begin outside the box and should not outline text when vertically misaligned.
 - Restricted horizontal targeting to characters actually under or very near each pin — hands-on testing confirmed first-line targets, but a pin beyond the end of a shorter second line incorrectly selected that line's last character.

@@ -162,13 +162,13 @@ input:focus-visible {
 }
 
 .add-color-button {
-  width: 190px;
+  width: 160px;
   min-height: 38px;
   padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
 }
 
@@ -433,6 +433,7 @@ input:focus-visible {
   border: 1px solid var(--line);
   border-radius: 9px;
   background: #fff;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 
@@ -458,7 +459,7 @@ input:focus-visible {
 .editor-stage {
   position: relative;
   width: calc(100% - 112px);
-  min-height: min(72vh, 700px);
+  height: min(700px, max(300px, calc(100vh - 320px)));
   overflow-x: hidden;
   overflow-y: auto;
   border: 1.5px solid #27383d;
