@@ -2,6 +2,7 @@ import { useCallback, useRef, useState, type CSSProperties } from 'react'
 import type { Editor, JSONContent } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'
 import { ColorDialog } from './components/ColorDialog'
+import { HelpPanel } from './components/HelpPanel'
 import { HoldRepeatButton } from './components/HoldRepeatButton'
 import { NoteEditor } from './components/NoteEditor'
 import { TargetBar } from './components/TargetBar'
@@ -49,11 +50,13 @@ function App() {
   const noteRef = useRef(note)
   const [editor, setEditor] = useState<Editor | null>(null)
   const [storageMessage, setStorageMessage] = useState(initialLoad.message)
+  const [storageWarning, setStorageWarning] = useState(initialLoad.blocked)
   const [pins, setPins] = useState<[PinTarget, PinTarget]>(DEFAULT_PIN_RANGE)
   const [colorDialog, setColorDialog] = useState<{ colorId: string | null } | null>(
     null,
   )
   const [barTop, setBarTop] = useState(12)
+  const [showHelp, setShowHelp] = useState(false)
   const [, setAppliedRange] = useState<TextRange | null>(null)
   const appliedRangeRef = useRef<TextRange | null>(null)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
@@ -79,7 +82,9 @@ function App() {
       setNote(updated)
 
       if (!initialLoad.blocked) {
-        setStorageMessage(saveNote(updated) ?? 'Saved in this browser')
+        const saveMessage = saveNote(updated)
+        setStorageMessage(saveMessage ?? 'Saved in this browser')
+        setStorageWarning(saveMessage !== null)
       }
     },
     [initialLoad.blocked],
@@ -367,10 +372,20 @@ function App() {
     <main className="app-shell">
       <header className="app-header">
         <a className="brand" href="/" aria-label="Granular home">Granular</a>
-        <div className="header-status" role="status" aria-live="polite">
+        <div
+          className={`header-status${storageWarning ? ' is-warning' : ''}`}
+          role="status"
+          aria-live="polite"
+        >
           {storageMessage ?? 'Your note is stored in this browser'}
         </div>
-        <button className="help-button" type="button" disabled aria-label="Help, coming in a later build step">
+        <button
+          className="help-button"
+          type="button"
+          aria-expanded={showHelp}
+          aria-controls="granular-help-panel"
+          onClick={() => setShowHelp(true)}
+        >
           Help
         </button>
       </header>
@@ -520,6 +535,7 @@ function App() {
           onSave={savePaletteColor}
         />
       )}
+      {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
     </main>
   )
 }

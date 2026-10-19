@@ -33,6 +33,12 @@ button {
   color: inherit;
 }
 
+button:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .app-shell {
   width: min(1480px, calc(100% - 48px));
   min-height: 100vh;
@@ -63,6 +69,15 @@ button {
   color: var(--muted);
   font-size: 0.85rem;
   text-align: right;
+}
+
+.header-status.is-warning {
+  padding: 8px 10px;
+  border: 1px solid #c64c36;
+  border-radius: 8px;
+  background: #fff0ec;
+  color: #8e2b19;
+  text-align: left;
 }
 
 .help-button {
@@ -164,7 +179,8 @@ button {
   border-color: var(--teal);
 }
 
-.dialog-backdrop {
+.dialog-backdrop,
+.help-backdrop {
   position: fixed;
   z-index: 20;
   inset: 0;
@@ -174,7 +190,8 @@ button {
   background: #17232875;
 }
 
-.color-dialog {
+.color-dialog,
+.help-panel {
   width: min(460px, 100%);
   max-height: min(90vh, 720px);
   overflow-y: auto;
@@ -185,7 +202,12 @@ button {
   box-shadow: 0 18px 60px #17232840;
 }
 
+.help-panel {
+  width: min(620px, 100%);
+}
+
 .color-dialog-header,
+.help-panel-header,
 .color-preview-row,
 .color-dialog-actions {
   display: flex;
@@ -196,6 +218,31 @@ button {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
+}
+
+.help-panel-header {
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.help-panel-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.help-panel ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+  color: #33454a;
+  line-height: 1.55;
+}
+
+.help-done {
+  display: block;
+  margin: 20px 0 0 auto;
 }
 
 .color-dialog-header h2 {
@@ -626,6 +673,19 @@ button {
     order: 3;
     width: 100%;
     text-align: left;
+  }
+
+  .app-header {
+    margin-bottom: 20px;
+  }
+
+  .color-dialog,
+  .help-panel {
+    padding: 18px;
+  }
+
+  .preset-colors {
+    gap: 10px;
   }
 
   .toolbar-note {
