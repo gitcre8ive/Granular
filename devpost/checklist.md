@@ -52,7 +52,7 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
-- [ ] Core highlight loop explored — after slice 2, try applying, adjusting, editing, and clearing highlights; verify endpoint pins follow edits inside an applied range.
+- [x] Core highlight loop explored — learner verified applying, incrementing across a wrapped line, decrementing one character, clearing with None without deleting text, and keeping the right pin aligned after inserting text inside a highlight.
 - [ ] Palette behavior explored — after slice 3, add and edit colors and confirm existing highlights follow the palette changes.
 - [ ] Final kick-the-tires exploration and feedback completed — after slice 4, run the complete demo journey and report problems or refinements.
 
