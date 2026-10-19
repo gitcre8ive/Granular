@@ -65,15 +65,15 @@ Build mode: fast
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap.
-- [ ] Optional edit and transfer reflection addressed — offered, declined, already covered, or not applicable.
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse.
+- [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
+- [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
+- [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
 
-Activity and evidence: [record actual activity, code/test/document references, and unfinished work]
-Route and stops: [record actual paths and symbols; say if not toured]
-Edit outcome: [tried/kept/reverted/declined/not applicable, with verification if changed]
-Reflection: [offered/answered/declined/already covered; personal response belongs only in ignored learner profile]
-Activity mode: [live app, static fallback, focused alternative, prior practice, or recap]
+Activity and evidence: Prior-practice recap of pointer-to-character geometry; the learner confirmed the final viewport behavior and editor scrolling, and reported no remaining issues.
+Route and stops: Reference route prepared, not toured interactively — `src/components/TargetBar.tsx > targetPin`, `src/lib/targeting.ts > targetAtPoint` and `targetPercentForCharacter`, `src/lib/highlighting.ts > getTargetRange`.
+Edit outcome: Not applicable; the learner said no extra POC changes were needed.
+Reflection: Already covered; personal response is recorded only in the ignored learner profile.
+Activity mode: Prior practice/recap.
 
 ## Revisions
 - Map active highlight ranges and endpoint pins through text edits — learner testing showed inserted text inherited the highlight but the endpoint pin stayed at its old document position.

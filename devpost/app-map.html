@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>Granular App Map</title>
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #172328;
+        background: #f6f7f7;
+        line-height: 1.55;
+      }
+
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      main { width: min(900px, calc(100% - 32px)); margin: 0 auto; padding: 38px 0 52px; }
+      h1, h2, h3 { line-height: 1.2; }
+      h1 { margin: 0 0 12px; font-size: clamp(2rem, 6vw, 3rem); letter-spacing: -0.04em; }
+      h2 { margin: 34px 0 12px; font-size: 1.35rem; }
+      h3 { margin: 0 0 8px; font-size: 1rem; }
+      p { margin: 8px 0 12px; }
+      a { color: #005e68; text-underline-offset: 0.18em; }
+      a:focus-visible { outline: 3px solid #168cff; outline-offset: 3px; }
+      code { overflow-wrap: anywhere; }
+      .eyebrow { color: #53666b; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+      .intro { max-width: 70ch; font-size: 1.08rem; }
+      .panel { margin-top: 18px; padding: 20px; border: 1px solid #c5d0d1; border-radius: 12px; background: #fff; }
+      .flow { display: block; width: 100%; height: auto; }
+      .flow text { fill: #172328; font: 16px system-ui, sans-serif; }
+      .flow .box { fill: #f6f7f7; stroke: #006d77; stroke-width: 2; }
+      .flow .arrow { fill: none; stroke: #006d77; stroke-width: 2.5; marker-end: url(#arrow); }
+      .route { display: grid; gap: 12px; padding-left: 22px; }
+      .route li { padding-left: 4px; }
+      .practice { border-left: 4px solid #006d77; padding: 4px 0 4px 16px; }
+      .meta { color: #53666b; font-size: 0.9rem; }
+      @media (max-width: 640px) {
+        main { padding-top: 24px; }
+        .panel { padding: 14px; }
+        .flow text { font-size: 13px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Granular · local-first proof of concept</p>
+        <h1>How pointer pins find characters</h1>
+        <p class="intro">Granular is a note editor for precise, multicolor text highlighting. A pin's screen position is translated into a real text character, and the active note and palette are saved in this browser. There is no account or remote service.</p>
+      </header>
+
+      <section class="panel" aria-labelledby="flow-heading">
+        <h2 id="flow-heading">One real action, from pointer to visible target</h2>
+        <figure>
+          <svg class="flow" viewBox="0 0 820 142" role="img" aria-labelledby="flow-title flow-desc">
+            <title id="flow-title">Pointer position becomes a character target</title>
+            <desc id="flow-desc">Dragging a pin provides screen coordinates. Targeting code maps them to a grapheme in the editor. The app records the pin target and displays a blue outline around the character.</desc>
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#006d77"></path>
+              </marker>
+            </defs>
+            <rect class="box" x="8" y="34" width="174" height="72" rx="10"></rect>
+            <text x="95" y="64" text-anchor="middle">Drag a pin</text>
+            <text x="95" y="87" text-anchor="middle">screen x / y</text>
+            <path class="arrow" d="M190 70 H226"></path>
+            <rect class="box" x="238" y="34" width="190" height="72" rx="10"></rect>
+            <text x="333" y="64" text-anchor="middle">Map to a</text>
+            <text x="333" y="87" text-anchor="middle">text grapheme</text>
+            <path class="arrow" d="M436 70 H472"></path>
+            <rect class="box" x="484" y="34" width="174" height="72" rx="10"></rect>
+            <text x="571" y="64" text-anchor="middle">Store the</text>
+            <text x="571" y="87" text-anchor="middle">pin target</text>
+            <path class="arrow" d="M666 70 H702"></path>
+            <rect class="box" x="714" y="34" width="98" height="72" rx="10"></rect>
+            <text x="763" y="64" text-anchor="middle">Blue</text>
+            <text x="763" y="87" text-anchor="middle">outline</text>
+          </svg>
+          <figcaption>Coordinate conversion keeps the pin attached to a character the user can see and target.</figcaption>
+        </figure>
+      </section>
+
+      <section aria-labelledby="route-heading">
+        <h2 id="route-heading">Reference route through the code</h2>
+        <p>This route is a reference, not a walkthrough completed together.</p>
+        <ol class="route">
+          <li>
+            <h3>Pointer input — <a href="../src/components/TargetBar.tsx"><code>src/components/TargetBar.tsx</code></a></h3>
+            <code>targetPin</code> combines the dragged pin's horizontal position with the bar's text-line height, then asks the targeting helper which character is underneath.
+          </li>
+          <li>
+            <h3>Coordinate geometry — <a href="../src/lib/targeting.ts"><code>src/lib/targeting.ts</code></a></h3>
+            <code>targetAtPoint</code> compares the pointer with measured grapheme rectangles; <code>targetPercentForCharacter</code> maps a character back to the bar when a pin must move with a range.
+          </li>
+          <li>
+            <h3>Range and feedback — <a href="../src/lib/highlighting.ts"><code>src/lib/highlighting.ts</code></a></h3>
+            <code>getTargetRange</code> turns active pin targets into a text range. The target decorations in <code>targeting.ts</code> provide the visible blue outline.
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="change-heading">
+        <h2 id="change-heading">To change this, start here</h2>
+        <ul>
+          <li>Pin hit-testing and bar geometry: <a href="../src/components/TargetBar.tsx"><code>TargetBar.tsx</code></a> and <a href="../src/lib/targeting.ts"><code>targetAtPoint</code></a>.</li>
+          <li>Range boundaries, grapheme stepping, and highlight marks: <a href="../src/lib/highlighting.ts"><code>highlighting.ts</code></a> and <a href="../src/App.tsx"><code>incrementHighlight</code> / <code>decrementHighlight</code></a>.</li>
+          <li>Palette choices and color conversion: <a href="../src/components/ColorDialog.tsx"><code>ColorDialog.tsx</code></a> and <a href="../src/lib/color.ts"><code>color.ts</code></a>.</li>
+          <li>Browser persistence and its failure messages: <a href="../src/lib/storage.ts"><code>storage.ts</code></a>.</li>
+        </ul>
+      </section>
+
+      <section class="practice" aria-labelledby="practice-heading">
+        <h2 id="practice-heading">A practice to reuse</h2>
+        <p>The approved <a href="./scope.md"><code>scope.md</code></a> made precise highlighting the unique kernel and cut the notes library and trash flow. The <a href="./checklist.md"><code>checklist.md</code></a> put pin-to-character mapping early, where hands-on checks with spaces, punctuation, wrapped lines, and edges exposed real targeting problems before polish.</p>
+        <p>On another project, name the one behavior that proves the idea, cut adjacent features that do not prove it, and test the riskiest assumption with representative input before building around it.</p>
+      </section>
+
+      <section aria-labelledby="run-heading">
+        <h2 id="run-heading">Run the app again</h2>
+        <p>From the repository root, run <code>npm install</code> if dependencies are not installed, then <code>npm run dev</code> and open the local URL printed by Vite (normally <code>http://localhost:5173</code>).</p>
+        <p class="meta">Source snapshot: commit <code>e81561d</code>. This standalone map works offline and may drift if the source changes later.</p>
+      </section>
+    </main>
+  </body>
+</html>
