@@ -175,7 +175,12 @@ function App() {
       return
     }
 
-    applyHighlight(editor, nextRange, note.activePaletteId)
+    isApplyingRef.current = true
+    try {
+      applyHighlight(editor, nextRange, note.activePaletteId)
+    } finally {
+      isApplyingRef.current = false
+    }
     setPins([
       { percent: leftPercent, target: leftTarget },
       { percent: rightPercent, target: rightTarget },
@@ -203,13 +208,18 @@ function App() {
     }
 
     const nextRange = { ...appliedRange, to: previousCharacter.from }
-    editor.view.dispatch(
-      editor.state.tr.removeMark(
-        previousCharacter.from,
-        previousCharacter.to,
-        markType,
-      ),
-    )
+    isApplyingRef.current = true
+    try {
+      editor.view.dispatch(
+        editor.state.tr.removeMark(
+          previousCharacter.from,
+          previousCharacter.to,
+          markType,
+        ),
+      )
+    } finally {
+      isApplyingRef.current = false
+    }
     setAppliedRange(nextRange)
     setActionMessage(null)
   }
