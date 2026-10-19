@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Granular — Product Requirements</title>
+  <style>
+    :root {
+      --ink: #17212f;
+      --muted: #5d6a7b;
+      --paper: #f3f6fb;
+      --card: #ffffff;
+      --line: #dfe6f1;
+      --blue: #2b5ef3;
+      --blue-soft: #edf3ff;
+      --green: #bfecc5;
+      --gold: #f5d879;
+      --orange: #f7b267;
+      --pink: #f0a1b8;
+      --shadow: rgba(31, 45, 64, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(980px, calc(100% - 28px));
+      margin: 40px auto 72px;
+    }
+    .eyebrow {
+      color: var(--blue);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 8px 0 12px;
+      font-size: clamp(2.5rem, 6vw, 4.25rem);
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.4rem;
+      letter-spacing: -0.03em;
+    }
+    h3 {
+      margin: 22px 0 10px;
+      font-size: 1.05rem;
+    }
+    p, li {
+      color: #1f2c3a;
+    }
+    p { margin: 0 0 12px; }
+    .status {
+      display: inline-block;
+      margin: 6px 0 24px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #fffbe5;
+      border: 1px solid #e5d18b;
+      color: #806315;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .card {
+      margin: 16px 0;
+      padding: 24px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px var(--shadow);
+    }
+    .lead {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 700px;
+    }
+    .diagram {
+      overflow: hidden;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin-top: 8px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 16px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--blue-soft);
+      color: #214bb4;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    ul {
+      margin: 0 0 6px 18px;
+      padding-left: 8px;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+    @media (max-width: 700px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      main { width: min(100% - 20px, 980px); }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Build With AI · Product requirements</div>
+    <h1>Granular</h1>
+    <div class="status">Approved product requirements</div>
+    <p class="lead">Granular is a local note editor designed for precise, low-friction text highlighting, built around a single editor surface and text-aware pointer controls.</p>
+
+    <section class="card">
+      <h2>The core journey</h2>
+      <svg viewBox="0 0 860 260" role="img" aria-labelledby="journey-title journey-desc">
+        <title id="journey-title">Granular core journey</title>
+        <desc id="journey-desc">User opens a note editor, types a note, selects a color, targets characters with pins, applies the highlight, adjusts it, and leaves with the result persisting locally.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 8 4 0 8z" fill="#73829d"></path>
+          </marker>
+        </defs>
+        <rect x="20" y="90" width="120" height="76" rx="14" fill="#edf3ff" stroke="#cfe0ff"></rect>
+        <text x="80" y="118" text-anchor="middle" fill="#1a2540" font-weight="700">Open</text>
+        <text x="80" y="143" text-anchor="middle" fill="#5a6a82">editor</text>
+        <path d="M142 128h32" stroke="#73829d" stroke-width="2" marker-end="url(#arrow)"></path>
+
+        <rect x="176" y="86" width="130" height="84" rx="14" fill="#ffffff" stroke="#dfe6f1"></rect>
+        <text x="241" y="116" text-anchor="middle" fill="#1a2540" font-weight="700">Type note</text>
+        <text x="241" y="140" text-anchor="middle" fill="#5a6a82">or paste text</text>
+        <path d="M308 128h30" stroke="#73829d" stroke-width="2" marker-end="url(#arrow)"></path>
+
+        <rect x="340" y="86" width="145" height="84" rx="14" fill="#ffffff" stroke="#dfe6f1"></rect>
+        <text x="412" y="116" text-anchor="middle" fill="#1a2540" font-weight="700">Choose color</text>
+        <text x="412" y="140" text-anchor="middle" fill="#5a6a82">sidebar pointer</text>
+        <path d="M487 128h28" stroke="#73829d" stroke-width="2" marker-end="url(#arrow)"></path>
+
+        <rect x="516" y="52" width="150" height="120" rx="14" fill="#ffffff" stroke="#dfe6f1"></rect>
+        <text x="591" y="83" text-anchor="middle" fill="#1a2540" font-weight="700">Position pins</text>
+        <text x="591" y="109" text-anchor="middle" fill="#5a6a82">set start + end</text>
+        <text x="591" y="135" text-anchor="middle" fill="#5a6a82">blue activated</text>
+        <text x="591" y="160" text-anchor="middle" fill="#5a6a82">range ready</text>
+        <path d="M668 112h34" stroke="#73829d" stroke-width="2" marker-end="url(#arrow)"></path>
+
+        <rect x="703" y="85" width="130" height="90" rx="14" fill="#ebf8ef" stroke="#cbead0"></rect>
+        <text x="768" y="116" text-anchor="middle" fill="#1a2540" font-weight="700">Apply</text>
+        <text x="768" y="141" text-anchor="middle" fill="#5a6a82">highlight</text>
+        <path d="M434 185v32h262v-10" stroke="#73829d" stroke-width="2" fill="none" marker-end="url(#arrow)"></path>
+        <text x="607" y="220" text-anchor="middle" fill="#5a6a82">adjust by character / persist locally</text>
+      </svg>
+    </section>
+
+    <div class="two-col">
+      <section class="card">
+        <h2>Layout and surfaces</h2>
+        <p>The first screen centers the note editor with a large editing box, a note title field, a target bar resting above it, and a left sidebar that starts with the default color only. The user can drag the bar down into the box and align its pin tips just above a text line. Additional color-filled pointer bars appear only after the user chooses “Add pointer bar,” picks a color in the modal, and confirms it. The active color button sits to the right of the bar; the add-pointer control sits nearby.</p>
+      </section>
+      <section class="card">
+        <h2>Core value</h2>
+        <p>Users can move beyond standard text selection and operate at the character level: precise range selection, character-by-character adjustment, and quick switching among highlight colors without leaving the note. The app also lets the user clear a range instantly with a None control when they want a single-step removal.</p>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Features and behavior</h2>
+
+      <h3>Editor input and persistence</h3>
+      <ul>
+        <li>The user can type or paste a short note into the main editor.</li>
+        <li>The title field accepts a custom title or fallbacks to “Untitled”.</li>
+        <li>Input persists in local browser storage after a refresh.</li>
+        <li>Ordinary text editing and deletion remains available without conflict with the highlight layer.</li>
+      </ul>
+
+      <h3>Highlight range selection</h3>
+      <ul>
+        <li>The horizontal target bar rests above the editor box and can be dragged down into it; the pin tips align just above the line to target.</li>
+        <li>The two pins define the selected range; moved away from the red inactive ends, they become active and target a character.</li>
+        <li>Blue borders show active endpoint characters only when the pin tips are positioned just above a valid text line.</li>
+        <li>Clicking the active color button fills the entire span between the pins, including endpoints and spaces.</li>
+        <li>Single-pin mode can highlight a single character.</li>
+      </ul>
+
+      <h3>Increment and decrement controls</h3>
+      <ul>
+        <li>The decrement button removes highlight coverage backward by one character at a time.</li>
+        <li>The increment button adds highlight coverage forward by one character at a time.</li>
+        <li>Holding either control speeds up the action.</li>
+        <li>Highlighting continues across lines when the range reaches the end of a line.</li>
+        <li>Decisions are bounded by the first pin, so the user can mark a left limit and remove only within that range.</li>
+      </ul>
+
+      <h3>Color pointer bars</h3>
+      <ul>
+        <li>The app shows default highlight and additional pointer bars as filled squares in the left sidebar.</li>
+        <li>The user can add a new pointer bar from a modal color selector.</li>
+        <li>Clicking a filled sidebar box activates that pointer bar and makes it the current color for highlighting.</li>
+        <li>The sidebar is organized in rows of four to keep the pointer stack visible and easy to scan.</li>
+      </ul>
+
+      <h3>Invalid and empty states</h3>
+      <ul>
+        <li>If no valid range is active, the app should not apply a highlight to the whole note.</li>
+        <li>Instead, it shows a clear prompt guiding the user to drag the bar and target a character range.</li>
+        <li>The user can target a single character if they leave one pin active and move the other to the inactive strip.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>States and boundaries</h2>
+      <ul>
+        <li><strong>First use:</strong> A blank note opens with default yellow highlight and no active range.</li>
+        <li><strong>Idle editor:</strong> The note and controls are visible, with no highlight selected.</li>
+        <li><strong>Range ready:</strong> Pin targets are active and the selected characters are visibly bordered in blue.</li>
+        <li><strong>Highlight applied:</strong> The chosen color fills the range and remains until it is removed or adjusted.</li>
+        <li><strong>Increment/decrement adjustment:</strong> The highlight expands or contracts by character with immediate visible updates.</li>
+        <li><strong>Invalid range:</strong> The app shows guidance instead of doing anything broad or unpredictable.</li>
+        <li><strong>Local persistence:</strong> The note remains after refresh.</li>
+      </ul>
+    </section>
+
+    <div class="two-col">
+      <section class="card">
+        <h2>What we're building</h2>
+        <ul>
+          <li>Single editor surface with note title and body</li>
+          <li>Target bar and draggable pins</li>
+          <li>Visible range activation and highlight application</li>
+          <li>Multiple filled pointer bars in a left sidebar</li>
+          <li>Increment and decrement highlight adjustment</li>
+          <li>Local persistence for the note content</li>
+          <li>Guided invalid-range behavior</li>
+        </ul>
+      </section>
+      <section class="card">
+        <h2>Deferred and cut</h2>
+        <ul>
+          <li>Dedicated read-only note view</li>
+          <li>Settings or trash flow</li>
+          <li>List/grid note library and batch operations</li>
+          <li>Complex deletion and restoration rules</li>
+          <li>Full app-like organization features</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Product decisions</h2>
+      <ul>
+        <li>The editor-first scope is intentional so the proof of concept stays visible and demoable within a short build.</li>
+        <li>The sidebar is the visible way to select and swap active color modes.</li>
+        <li>The blue activation border is the main state indicator before a highlight is applied.</li>
+        <li>Character-level precision is the defining product trait, and it remains the focus even when the user adjusts range size.</li>
+        <li>Local persistence keeps the app useful without requiring a broader notes-management system.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Open questions</h2>
+      <ul>
+        <li>Should the app support custom colors beyond the small preset palette for the prototype?</li>
+        <li>Should the helper prompt be temporary or permanently visible during editing?</li>
+        <li>Should local persistence be per note or limited to a single current note state?</li>
+      </ul>
+      <p class="note">These are minor enough to resolve in the build without changing the essential proof-of-concept boundary.</p>
+    </section>
+  </main>
+</body>
+</html>

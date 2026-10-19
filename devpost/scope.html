@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Granular — Project Scope</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #192334;
+      --muted: #596579;
+      --paper: #f5f7fb;
+      --card: #fff;
+      --line: #dce3ed;
+      --blue: #2463eb;
+      --blue-soft: #eaf0ff;
+      --yellow: #ffe66d;
+      --pink: #ff9cb5;
+      --green: #a8e6c0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { width: min(920px, calc(100% - 32px)); margin: 48px auto 72px; }
+    .eyebrow { color: var(--blue); font-size: .78rem; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 8px 0; font-size: clamp(2.5rem, 8vw, 4.5rem); letter-spacing: -.06em; line-height: 1; }
+    h2 { margin: 0 0 12px; font-size: 1.35rem; letter-spacing: -.025em; }
+    p { margin: 0 0 12px; }
+    .lede { max-width: 680px; color: var(--muted); font-size: 1.15rem; }
+    .status { display: inline-block; margin: 18px 0 28px; padding: 3px 10px; border: 1px solid #d4b64a; border-radius: 99px; background: #fff7d3; font-size: .8rem; font-weight: 700; }
+    .card { margin: 16px 0; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: 0 8px 26px #263a5c0a; }
+    .kernel { border-left: 5px solid var(--blue); }
+    .diagram { overflow: hidden; }
+    svg { display: block; width: 100%; height: auto; margin: 12px 0; }
+    .diagram-note { color: var(--muted); font-size: .9rem; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .tag { display: inline-block; margin: 0 6px 6px 0; padding: 3px 10px; border-radius: 99px; background: var(--blue-soft); color: #1747a6; font-size: .85rem; font-weight: 650; }
+    .colors { display: inline-flex; gap: 6px; vertical-align: middle; }
+    .swatch { width: 16px; height: 16px; border: 1px solid #64708455; border-radius: 5px; }
+    details { border-top: 1px solid var(--line); }
+    details:first-of-type { border-top: 0; }
+    summary { padding: 14px 2px; cursor: pointer; font-weight: 700; }
+    summary::marker { color: var(--blue); }
+    details ul { margin: 0 0 18px; padding-left: 22px; color: var(--muted); }
+    li + li { margin-top: 6px; }
+    .footer { margin-top: 24px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 640px) {
+      main { margin-top: 28px; }
+      .card { padding: 18px; }
+      .two-col { grid-template-columns: 1fr; gap: 0; }
+      svg text { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Build With AI · Project scope</div>
+      <h1>Granular</h1>
+      <p class="lede">A local note editor built around precise, low-friction, multicolor text highlighting.</p>
+      <span class="status">Approved scope</span>
+    </header>
+
+    <section class="card kernel">
+      <h2>The distinctive idea</h2>
+      <p>Highlight or remove text one character at a time—including spaces—rather than relying only on conventional selection. A movable bar and character-target pins mark a range; clicking the active color button applies that color to the entire span between the pins. Color-filled pointer bars in the sidebar make switching colors immediate.</p>
+    </section>
+
+    <section class="card diagram">
+      <h2>Person → editor loop → proof</h2>
+      <svg viewBox="0 0 840 240" role="img" aria-labelledby="diagram-title diagram-desc">
+        <title id="diagram-title">Granular's user, core loop, and proof of concept</title>
+        <desc id="diagram-desc">A student or the learner works in the editor: enter a short note, choose a sidebar color, target start and end characters with pins, apply color to the full range, and increment or remove highlights. The result is visible in multiple colors and retained locally.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 8 4 0 8z" fill="#71809a"></path>
+          </marker>
+        </defs>
+        <rect x="8" y="65" width="165" height="112" rx="16" fill="#eaf0ff" stroke="#c5d4fb"></rect>
+        <text x="90" y="101" text-anchor="middle" fill="#192334" font-weight="700">First user</text>
+        <text x="90" y="128" text-anchor="middle" fill="#596579">You, then students</text>
+        <text x="90" y="150" text-anchor="middle" fill="#596579">studying text</text>
+        <path d="M178 121h53" stroke="#71809a" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="244" y="38" width="352" height="166" rx="16" fill="#fff" stroke="#dce3ed"></rect>
+        <text x="420" y="69" text-anchor="middle" fill="#192334" font-weight="700">Editor loop</text>
+        <rect x="265" y="91" width="82" height="47" rx="10" fill="#f5f7fb" stroke="#dce3ed"></rect>
+        <text x="306" y="120" text-anchor="middle" fill="#192334">Note</text>
+        <path d="M350 114h20" stroke="#71809a" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="376" y="91" width="90" height="47" rx="10" fill="#eaf0ff" stroke="#c5d4fb"></rect>
+        <text x="421" y="120" text-anchor="middle" fill="#192334">Pins target</text>
+        <path d="M469 114h20" stroke="#71809a" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="495" y="91" width="80" height="47" rx="10" fill="#f5f7fb" stroke="#dce3ed"></rect>
+        <text x="535" y="120" text-anchor="middle" fill="#192334">Color</text>
+        <text x="420" y="173" text-anchor="middle" fill="#596579">Increment / remove · switch sidebar colors</text>
+        <path d="M601 121h53" stroke="#71809a" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="667" y="65" width="165" height="112" rx="16" fill="#effaf3" stroke="#c1e7cf"></rect>
+        <text x="749" y="101" text-anchor="middle" fill="#192334" font-weight="700">Proof</text>
+        <text x="749" y="128" text-anchor="middle" fill="#596579">Precise multicolor</text>
+        <text x="749" y="150" text-anchor="middle" fill="#596579">text saved locally</text>
+      </svg>
+      <p class="diagram-note">The pin endpoints activate with blue borders. Clicking the active color button applies it to the full range between them, including endpoints and spaces. For example, in “Obi is a good boy.”, the left pin targets “a” and the right pin targets the final “d” in “good”; the applied range is “a good”. Increment/decrement controls adjust it by character.</p>
+    </section>
+
+    <div class="two-col">
+      <section class="card">
+        <h2>Who it's for</h2>
+        <p>The learner is the first person to try Granular. Students are the first broader audience, followed by teachers; a student might emphasize copied reading or their own notes.</p>
+      </section>
+      <section class="card">
+        <h2>Why it matters</h2>
+        <p>Make highlighting more convenient and expressive for learning and reference, while practicing reasonable scoping and finishing a working app.</p>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Scope boundary</h2>
+      <p><span class="tag">Editor mode</span><span class="tag">Sidebar color boxes</span><span class="tag">Target pins</span><span class="tag">Increment / remove</span><span class="tag">Local persistence</span></p>
+      <p>The editor has a short note, a small set of distinct colors with add/activate pointer bars, a movable drag bar and character-target pins, and a separate color button beside the bar that applies the active color to the entire range bracketed by the pins. Activated pin endpoints are visibly marked; the applied range includes both endpoints and any spaces between them. Incremental controls provide character-by-character extension and removal, including across lines, with visible progressive movement and local persistence. Selecting a filled sidebar box switches the active color.</p>
+      <div class="colors" aria-label="Example highlight colors">
+        <span class="swatch" style="background:var(--yellow)"></span>
+        <span class="swatch" style="background:var(--pink)"></span>
+        <span class="swatch" style="background:var(--green)"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Now, later, and cut</h2>
+      <details open>
+        <summary>Now · prove the editor interaction</summary>
+        <ul>
+          <li>Use the drag bar and pins to target the start and end characters of a range; applying color fills the whole span, including spaces.</li>
+          <li>Incrementally highlight and remove, including across lines, with visible movement.</li>
+          <li>Add and activate multiple color pointer bars represented by filled boxes in the left sidebar.</li>
+          <li>Keep the note in local browser storage.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Later · useful, not required for this demo</summary>
+        <ul>
+          <li>Saved-notes library, read-only view, and trash/restore flow.</li>
+          <li>Full pointer-bar editing/deletion, undo, and polished save-status indicator.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Cut · not part of this proof of concept</summary>
+        <ul>
+          <li>Trash and note restoration/deletion, because this proof focuses on editor mode.</li>
+          <li>Read-only screen and saved-notes library; local persistence is enough to demonstrate the editor.</li>
+          <li>Hide-pointer-bar/eye control, which the learner decided adds little to the core idea.</li>
+        </ul>
+      </details>
+    </section>
+    <p class="footer">This lightweight, self-contained visual companion works offline. The Markdown scope remains the canonical plan.</p>
+  </main>
+</body>
+</html>

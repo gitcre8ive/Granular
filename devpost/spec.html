@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Granular — Technical Specification</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182432;
+      --muted: #586779;
+      --paper: #f3f6fa;
+      --card: #fff;
+      --line: #dce4ed;
+      --blue: #176b87;
+      --blue-soft: #e8f4f7;
+      --teal: #006d77;
+      --yellow: #fff000;
+      --red: #f32618;
+      --green: #e9f7ec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { width: min(1000px, calc(100% - 32px)); margin: 42px auto 76px; }
+    h1 { margin: 6px 0 10px; font-size: clamp(2.6rem, 8vw, 4.6rem); line-height: 1; letter-spacing: -.065em; }
+    h2 { margin: 0 0 12px; font-size: 1.35rem; letter-spacing: -.03em; }
+    h3 { margin: 20px 0 8px; font-size: 1rem; }
+    p { margin: 0 0 12px; }
+    a { color: #075977; }
+    .eyebrow { color: var(--blue); font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .lead { max-width: 760px; color: var(--muted); font-size: 1.12rem; }
+    .status { display: inline-block; margin: 12px 0 24px; padding: 3px 11px; border: 1px solid #d5bd6a; border-radius: 99px; background: #fff8d8; font-size: .8rem; font-weight: 750; }
+    .card { margin: 16px 0; padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); box-shadow: 0 9px 30px #2539540a; }
+    .plain { border-left: 5px solid var(--teal); }
+    .diagram { overflow: hidden; }
+    svg { display: block; width: 100%; height: auto; margin: 12px 0; }
+    .caption, .muted { color: var(--muted); font-size: .92rem; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid .card { margin: 0; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
+    .pill { padding: 4px 10px; border-radius: 99px; background: var(--blue-soft); color: #14536b; font-size: .82rem; font-weight: 700; }
+    .swatches { display: flex; gap: 7px; margin: 8px 0; }
+    .swatch { width: 22px; height: 22px; border: 1px solid #48576755; border-radius: 6px; }
+    details { border-top: 1px solid var(--line); }
+    details:first-of-type { border-top: 0; }
+    summary { padding: 13px 2px; cursor: pointer; font-weight: 750; }
+    summary::marker { color: var(--blue); }
+    details p, details ul { margin-bottom: 16px; color: var(--muted); }
+    ul { margin-top: 8px; padding-left: 22px; }
+    li + li { margin-top: 5px; }
+    code { padding: 2px 5px; border-radius: 5px; background: #eef2f6; font-size: .9em; }
+    .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; counter-reset: journey; }
+    .step { position: relative; min-height: 100px; padding: 14px 14px 14px 46px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfe; counter-increment: journey; }
+    .step::before { content: counter(journey); position: absolute; top: 14px; left: 13px; display: grid; width: 24px; height: 24px; place-items: center; border-radius: 50%; background: var(--blue); color: white; font-size: .78rem; font-weight: 800; }
+    .step strong { display: block; margin-bottom: 3px; }
+    .footer { margin-top: 24px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 700px) {
+      main { margin-top: 26px; }
+      .card { padding: 18px; }
+      .grid { grid-template-columns: 1fr; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      svg text { font-size: 13px; }
+    }
+    @media (max-width: 430px) {
+      .flow { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Build With AI · Technical blueprint</div>
+      <h1>Granular</h1>
+      <p class="lead">A single-screen local note editor where pins target characters and palette colors become persistent text highlights.</p>
+      <span class="status">Approved technical spec</span>
+    </header>
+
+    <section class="card plain">
+      <h2>How this works, in plain language</h2>
+      <p>Granular is a browser app. React keeps the screen in sync, TypeScript catches many mistakes before the app runs, and Vite serves it locally. The note is edited in Tiptap: unlike a plain text box, it can keep colored marks attached to text while someone types, pastes, or deletes. The pins point into that same text. One note, its title, and its palette are saved only in this browser—no account or cloud service.</p>
+    </section>
+
+    <section class="card diagram">
+      <h2>Pieces and data flow</h2>
+      <svg viewBox="0 0 900 350" role="img" aria-labelledby="architecture-title architecture-desc">
+        <title id="architecture-title">Granular app architecture and local data flow</title>
+        <desc id="architecture-desc">The person uses the React screen components. Target pins map screen coordinates to Tiptap document positions. Tiptap stores text and highlight marks. The saved note and color palette flow to and from browser local storage.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0 0 8 4 0 8z" fill="#718197"></path>
+          </marker>
+        </defs>
+        <rect x="18" y="111" width="125" height="76" rx="15" fill="#e8f4f7" stroke="#badce4"></rect>
+        <text x="80" y="143" text-anchor="middle" fill="#182432" font-weight="700">Person</text>
+        <text x="80" y="165" text-anchor="middle" fill="#586779">types / drags</text>
+        <path d="M147 149h37" stroke="#718197" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="191" y="48" width="326" height="215" rx="18" fill="#fff" stroke="#dce4ed"></rect>
+        <text x="354" y="77" text-anchor="middle" fill="#182432" font-weight="750">React editor screen</text>
+        <rect x="215" y="98" width="126" height="57" rx="11" fill="#f5f8fa" stroke="#dce4ed"></rect>
+        <text x="278" y="123" text-anchor="middle" fill="#182432" font-weight="650">Target pins</text>
+        <text x="278" y="143" text-anchor="middle" fill="#586779">screen ↔ text position</text>
+        <rect x="364" y="98" width="129" height="57" rx="11" fill="#f5f8fa" stroke="#dce4ed"></rect>
+        <text x="428" y="123" text-anchor="middle" fill="#182432" font-weight="650">Palette + actions</text>
+        <text x="428" y="143" text-anchor="middle" fill="#586779">apply / clear / adjust</text>
+        <rect x="215" y="176" width="278" height="62" rx="11" fill="#fff" stroke="#b5c7d6"></rect>
+        <text x="354" y="202" text-anchor="middle" fill="#182432" font-weight="650">Tiptap rich-text document</text>
+        <text x="354" y="222" text-anchor="middle" fill="#586779">text + palette-linked marks</text>
+        <path d="M520 149h44" stroke="#718197" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="570" y="95" width="150" height="110" rx="16" fill="#fff8d9" stroke="#e7d581"></rect>
+        <text x="645" y="128" text-anchor="middle" fill="#182432" font-weight="700">localStorage</text>
+        <text x="645" y="153" text-anchor="middle" fill="#586779">one note + title</text>
+        <text x="645" y="175" text-anchor="middle" fill="#586779">palette + highlights</text>
+        <path d="M721 149h42" stroke="#718197" stroke-width="2" marker-end="url(#arrow)"></path>
+        <rect x="769" y="111" width="115" height="76" rx="15" fill="#e9f7ec" stroke="#c1e4c9"></rect>
+        <text x="826" y="143" text-anchor="middle" fill="#182432" font-weight="700">Refresh</text>
+        <text x="826" y="165" text-anchor="middle" fill="#586779">restores note</text>
+        <path d="M645 211v63H354v-9" stroke="#718197" stroke-width="2" fill="none" marker-end="url(#arrow)"></path>
+        <text x="500" y="298" text-anchor="middle" fill="#586779">Changes save locally; the browser reload reads the same current note.</text>
+      </svg>
+      <p class="caption">The target pins are the uncertain part: browser coordinates must map accurately to text characters. We’ll test this with spaces, punctuation, wrapped text, and line breaks early.</p>
+    </section>
+
+    <section class="card">
+      <h2>Walk through the journey</h2>
+      <div class="flow">
+        <div class="step"><strong>Open</strong>Load the current note, or start blank with one yellow pointer.</div>
+        <div class="step"><strong>Write</strong>Type or paste in the large editor; title and content save locally.</div>
+        <div class="step"><strong>Add a color</strong>Open the color dialog, choose a preset or set HSV, then confirm.</div>
+        <div class="step"><strong>Target</strong>Drag the bar and pins; blue endpoint borders show the selected characters.</div>
+        <div class="step"><strong>Highlight</strong>Apply to the inclusive range, or adjust it one character at a time.</div>
+        <div class="step"><strong>Reopen</strong>Refresh to verify the latest text, palette, and marks remain.</div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Chosen stack</h2>
+        <div class="pills">
+          <span class="pill">React</span><span class="pill">TypeScript</span><span class="pill">Vite</span><span class="pill">Tiptap</span><span class="pill">localStorage</span>
+        </div>
+        <p><a href="https://react.dev/learn">React docs</a> · <a href="https://www.typescriptlang.org/docs/">TypeScript docs</a> · <a href="https://vite.dev/guide/">Vite docs</a></p>
+        <p><a href="https://tiptap.dev/docs/editor/getting-started/install/react">Tiptap React</a> · <a href="https://tiptap.dev/docs/editor/extensions/overview">Tiptap extensions</a> · <a href="https://prosemirror.net/docs/ref/#view.EditorView.posAtCoords">Text position API</a></p>
+        <p><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">Browser storage</a></p>
+        <p class="muted">No API keys, server, database service, or color-picker package. HSV conversion stays in a small project helper.</p>
+      </section>
+      <section class="card">
+        <h2>Try it locally</h2>
+        <ol>
+          <li>From the repository root: <code>npm install</code></li>
+          <li>Start the app: <code>npm run dev</code></li>
+          <li>Open the local URL Vite prints, normally <code>http://localhost:5173</code>.</li>
+        </ol>
+        <p class="muted">Use the local browser screen for the required short demo video. Deployment is optional; the public GitHub repository and demo video are both required for submission.</p>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Components tied to the product</h2>
+      <details open>
+        <summary>Editor surface · title and rich text</summary>
+        <p><strong>Files:</strong> <code>App.tsx</code>, <code>NoteTitle.tsx</code>, <code>NoteEditor.tsx</code>. Implements PRD <em>Editor input and persistence</em> and <em>Highlight range selection</em>. Text edits preserve highlight marks, including newly inserted text inside a highlighted passage.</p>
+      </details>
+      <details>
+        <summary>Targeting and highlight actions</summary>
+        <p><strong>Files:</strong> <code>TargetBar.tsx</code>, <code>HighlightActions.tsx</code>, <code>highlight.ts</code>. Implements PRD <em>Highlight range selection</em> and <em>Increment and decrement controls</em>. Each pin targets a character start; the inclusive user range is stored with an exclusive end boundary. Includes one-pin single-character mode, None, held-button repeat, range limits, and a brief character-by-character reveal when applying a color.</p>
+      </details>
+      <details>
+        <summary>Palette, custom color, and help</summary>
+        <p><strong>Files:</strong> <code>Palette.tsx</code>, <code>ColorDialog.tsx</code>, <code>color.ts</code>, <code>HelpDialog.tsx</code>. Implements PRD <em>Color pointer bars</em> and <em>Prompt and invalid-state guidance</em>. Starts with one default color; adding uses a cancelable dialog; editing a color updates its existing text highlights.</p>
+      </details>
+      <details>
+        <summary>Local persistence and app styling</summary>
+        <p><strong>Files:</strong> <code>useSavedNote.ts</code>, <code>storage.ts</code>, <code>styles.css</code>. Implements PRD <em>Editor input and persistence</em> and <em>States and Boundaries</em>. Reports load/save failures instead of pretending the data was saved.</p>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>Data that persists</h2>
+      <p>One versioned record: title, Tiptap JSON document, palette entries (<code>id</code>, label, color), and active color ID. Each highlight mark stores a stable palette ID, not a copied color, so editing a swatch updates its existing highlights. Pins target character starts; the derived range includes the final character using an exclusive document end. Pin positions are temporary and start unset after a refresh.</p>
+      <div class="swatches" aria-label="Example palette colors">
+        <span class="swatch" style="background:var(--yellow)"></span>
+        <span class="swatch" style="background:var(--red)"></span>
+        <span class="swatch" style="background:#ff9b2f"></span>
+        <span class="swatch" style="background:#55d991"></span>
+        <span class="swatch" style="background:#85c8ff"></span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Build boundaries and checks</h2>
+      <details open>
+        <summary>Simplifications for this proof of concept</summary>
+        <ul>
+          <li>One active note, not a library, history, or multi-note workflow.</li>
+          <li>One default yellow swatch; all other colors are user-added.</li>
+          <li>Small in-project HSV controls, rather than an extra picker dependency.</li>
+          <li>No accounts, server, deployment, settings, trash, or sync.</li>
+          <li>Ambatah is listed first with system fallbacks because no font file is present.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Likely failure points and recovery</summary>
+        <ul>
+          <li>Wrong pin-to-character mapping → show the targeted character and verify spaces, punctuation, wrapped lines, and paragraph boundaries.</li>
+          <li>Highlights detach during editing → use rich-text marks and verify insertion/deletion inside a marked passage.</li>
+          <li>Storage read/write fails or data is invalid → show an explicit warning, keep editing in memory, and do not report a false save.</li>
+          <li>Color dialog is cancelled → discard its draft; do not add or change a sidebar item.</li>
+        </ul>
+      </details>
+      <p class="muted">The character-to-screen mapping and compatible package versions are the first build checks. If unusual multi-code-unit characters expose an indexing mismatch, decide whether to extend that mapping before declaring precise targeting complete.</p>
+    </section>
+
+    <section class="card">
+      <h2>Visual references</h2>
+      <p><a href="./images/granular_poc_screen1.svg">Concept screen 1</a> · <a href="./images/granular_poc_screen2.svg">Concept screen 2</a></p>
+      <p>Use Ambatah first in the app-name font stack, then a system sans-serif fallback. No external font download is planned.</p>
+    </section>
+
+    <p class="footer">This offline-friendly page is a visual companion. The Markdown specification remains canonical.</p>
+  </main>
+</body>
+</html>
