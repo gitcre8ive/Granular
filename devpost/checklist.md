@@ -53,7 +53,7 @@ Build mode: fast
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
 - [x] Core highlight loop explored — learner verified applying, incrementing across a wrapped line, decrementing one character, clearing with None without deleting text, and keeping the right pin aligned after inserting text inside a highlight.
-- [ ] Palette behavior explored — after slice 3, add and edit colors and confirm existing highlights follow the palette changes.
+- [x] Palette behavior explored — learner verified add/cancel, color switching, editing existing colors, recoloring existing highlights, and persistence after refresh.
 - [ ] Final kick-the-tires exploration and feedback completed — after slice 4, run the complete demo journey and report problems or refinements.
 
 ## Final Review
@@ -74,6 +74,7 @@ Activity mode: [live app, static fallback, focused alternative, prior practice, 
 
 ## Revisions
 - Map active highlight ranges and endpoint pins through text edits — learner testing showed inserted text inherited the highlight but the endpoint pin stayed at its old document position.
+- Defer palette/layout alignment feedback to slice 4 — the learner confirmed palette behavior and requested that visual cleanup wait until core functionality is complete.
 - Added hands-on pauses after slices 1, 2, and 3 — the learner chose Fast mode to save time and credits while still testing the app as it is built; each pause focuses on a distinct behavior and gives feedback time to shape the remaining work.
 - Narrowed the pin inactive zones to match the editor's responsive text insets — hands-on feedback showed that fixed-width end zones blocked characters near the start and end of a line.
 - Added a measured-character fallback when the editor's point lookup cannot resolve a pin position near the text edges — retesting showed that the narrower red zones fixed the boundary size but did not yet activate every edge character.
