@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Highlight “a good” by targeting `a` and the final `d`, try increment/decrement, clear the selected range with None, then reapply a highlight and insert a word inside it. Confirm the text stays editable and the highlight follows the edited passage.
   Commit: `Add precise highlight actions`
 
-- [ ] **3. You can add, choose, and edit highlight colors**
+- [x] **3. You can add, choose, and edit highlight colors**
   Becomes usable: The default yellow pointer is joined by user-added colors; the user can activate or edit palette squares, and existing highlights update when their palette color changes.
   Why now: This adds the multi-color workflow after range highlighting works, isolating palette and mark-link behavior from the targeting risk.
   PRD ref: `prd.md > Color pointer bars`, `prd.md > Product Decisions`, `prd.md > States and Boundaries`
