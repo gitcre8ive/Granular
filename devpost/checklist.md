@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Add a custom color, use it to highlight a second range, switch colors from the sidebar, edit the first color, then refresh. Confirm the swatches and both existing highlight colors behave as expected.
   Commit: `Add editable pointer color palette`
 
-- [ ] **4. You can use the complete editor and understand its controls**
+- [x] **4. You can use the complete editor and understand its controls**
   Becomes usable: The single editor screen has the approved layout, Help instructions, accessible control feedback, and explicit messages for invalid targeting or persistence errors; the core workflow is ready for a short demo.
   Why now: Complete the presentation and safeguards after the core editor works, then verify the full journey from fresh launch through refresh without reintroducing cut note-management features.
   PRD ref: `prd.md > Screens and Layout`, `prd.md > Look and Feel`, `prd.md > Prompt and invalid-state guidance`, `prd.md > States and Boundaries`, `prd.md > What We're Building`
