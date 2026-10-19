@@ -156,13 +156,12 @@ button {
 
 .range-adjust-controls {
   position: absolute;
-  left: 50%;
+  right: 0;
   z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 54px 38px;
+  grid-template-rows: 38px 38px;
   gap: 8px;
-  transform: translateX(-50%);
 }
 
 .step-button,
@@ -180,8 +179,9 @@ button {
 }
 
 .none-button {
+  width: 54px;
   min-height: 38px;
-  padding: 0 12px;
+  padding: 0 8px;
   border: 1px solid var(--line);
   border-radius: 9px;
   background: #fff;
@@ -199,8 +199,37 @@ button {
   border-radius: 5px;
 }
 
+.range-adjust-controls > :nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.range-adjust-controls > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.range-adjust-controls > :nth-child(3) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.range-adjust-controls > :nth-child(4) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.target-track-area {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100% - 112px);
+}
+
 .editor-stage {
   position: relative;
+  width: calc(100% - 112px);
   min-height: min(72vh, 700px);
   overflow-x: hidden;
   overflow-y: auto;
@@ -356,6 +385,29 @@ button {
   .note-editor {
     padding-right: 18px;
     padding-left: 18px;
+  }
+
+  .range-adjust-controls {
+    grid-template-columns: 50px 34px;
+    grid-template-rows: 34px 34px;
+    gap: 6px;
+  }
+
+  .step-button,
+  .apply-color-button,
+  .none-button {
+    width: 34px;
+    height: 34px;
+  }
+
+  .none-button {
+    width: 50px;
+    min-height: 34px;
+  }
+
+  .target-track-area,
+  .editor-stage {
+    width: calc(100% - 102px);
   }
 }
 

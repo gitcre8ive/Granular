@@ -17,6 +17,7 @@ import {
 type TargetBarProps = {
   editor: Editor | null
   regionRef: RefObject<HTMLDivElement | null>
+  trackRef: RefObject<HTMLDivElement | null>
   pins: [PinTarget, PinTarget]
   barTop: number
   onBarTopChange: (value: number) => void
@@ -31,6 +32,7 @@ const INACTIVE_ZONE_PX = 8
 export function TargetBar({
   editor,
   regionRef,
+  trackRef,
   pins,
   barTop,
   onBarTopChange,
@@ -38,7 +40,6 @@ export function TargetBar({
   disabled = false,
 }: TargetBarProps) {
   const [inactiveEdges, setInactiveEdges] = useState<[number, number]>([0, 0])
-  const trackRef = useRef<HTMLDivElement>(null)
   const draggingPin = useRef<number | null>(null)
   const draggingBar = useRef<number | null>(null)
 

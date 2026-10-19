@@ -102,3 +102,16 @@ export function targetAtPoint(editor: Editor, x: number, y: number): Target | nu
     null,
   )?.target ?? null
 }
+
+export function targetPercentForCharacter(
+  editor: Editor,
+  target: Target,
+  track: HTMLElement,
+): number | null {
+  const bounds = track.getBoundingClientRect()
+  if (!bounds.width) return null
+
+  const rect = characterRect(editor, target.position, target.position + target.length)
+  const centerX = (rect.left + rect.right) / 2
+  return ((centerX - bounds.left) / bounds.width) * 100
+}

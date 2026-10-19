@@ -12,7 +12,10 @@ import {
   type TextRange,
 } from './lib/highlighting'
 import { loadSavedNote, saveNote, type SavedNote } from './lib/storage'
-import type { PinTarget } from './lib/targeting'
+import {
+  targetPercentForCharacter,
+  type PinTarget,
+} from './lib/targeting'
 
 const DEFAULT_PIN_RANGE: [PinTarget, PinTarget] = [
   { percent: 0, target: null },
@@ -32,6 +35,7 @@ function App() {
   const [isApplying, setIsApplying] = useState(false)
   const isApplyingRef = useRef(false)
   const targetingRegionRef = useRef<HTMLDivElement>(null)
+  const targetTrackRef = useRef<HTMLDivElement>(null)
   const targetRange = getTargetRange(pins)
 
   const paletteVariables = Object.fromEntries(
@@ -145,7 +149,37 @@ function App() {
     }
 
     const nextRange = { from: range.from, to: nextCharacter.to }
+    const firstCharacter = getTextCharacterRanges(
+      editor.state.doc,
+      range.from,
+      editor.state.doc.content.size,
+    ).find((character) => character.from === range.from)
+    const track = targetTrackRef.current
+    if (!firstCharacter || !track) {
+      setActionMessage('The next character cannot be positioned on the target bar.')
+      return
+    }
+
+    const leftTarget = {
+      position: firstCharacter.from,
+      length: firstCharacter.to - firstCharacter.from,
+    }
+    const rightTarget = {
+      position: nextCharacter.from,
+      length: nextCharacter.to - nextCharacter.from,
+    }
+    const leftPercent = targetPercentForCharacter(editor, leftTarget, track)
+    const rightPercent = targetPercentForCharacter(editor, rightTarget, track)
+    if (leftPercent === null || rightPercent === null) {
+      setActionMessage('The next character cannot be positioned on the target bar.')
+      return
+    }
+
     applyHighlight(editor, nextRange, note.activePaletteId)
+    setPins([
+      { percent: leftPercent, target: leftTarget },
+      { percent: rightPercent, target: rightTarget },
+    ])
     setAppliedRange(nextRange)
     setActionMessage(null)
   }
@@ -242,7 +276,15 @@ function App() {
           <div className="editor-targeting-region" ref={targetingRegionRef}>
             <div
               className="range-adjust-controls"
-              style={{ top: Math.max(0, barTop - 52) }}
+              style={{
+                top: Math.max(
+                  0,
+                  Math.min(
+                    barTop - 30,
+                    (targetingRegionRef.current?.clientHeight ?? 210) - 84,
+                  ),
+                ),
+              }}
             >
               <HoldRepeatButton
                 disabled={isApplying}
@@ -278,15 +320,18 @@ function App() {
               </button>
             </div>
 
-            <TargetBar
-              editor={editor}
-              regionRef={targetingRegionRef}
-              pins={pins}
-              barTop={barTop}
-              onBarTopChange={setBarTop}
-              onPinsChange={handlePinsChange}
-              disabled={isApplying}
-            />
+            <div className="target-track-area">
+              <TargetBar
+                editor={editor}
+                regionRef={targetingRegionRef}
+                trackRef={targetTrackRef}
+                pins={pins}
+                barTop={barTop}
+                onBarTopChange={setBarTop}
+                onPinsChange={handlePinsChange}
+                disabled={isApplying}
+              />
+            </div>
             <div className="editor-stage">
               <div
                 className="palette-css-vars"
