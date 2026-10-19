@@ -9,7 +9,7 @@ Build mode: fast
 
 ## Slices
 
-- [ ] **1. You can edit a note and target exact characters with pins**
+- [x] **1. You can edit a note and target exact characters with pins**
   Becomes usable: A locally running editor accepts typed and pasted text, saves the latest title and document locally, and lets the user drag the bar and pins to visibly target characters, including spaces and punctuation.
   Why now: Bootstrapping belongs inside the first usable slice. Pin-to-character mapping is the riskiest part of the unique kernel, so we prove it against actual editable text before building more behavior around it.
   PRD ref: `prd.md > The Core Journey` (steps 1-5), `prd.md > Editor input and persistence`, `prd.md > Highlight range selection`
