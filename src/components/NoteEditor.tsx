@@ -8,7 +8,7 @@ import { TargetDecorations } from '../lib/targeting'
 type NoteEditorProps = {
   content: JSONContent
   editable: boolean
-  onChange: (content: JSONContent) => void
+  onChange: (content: JSONContent, textChanged: boolean) => void
   onEditorReady: (editor: TiptapEditor | null) => void
 }
 
@@ -29,7 +29,17 @@ export function NoteEditor({
         spellcheck: 'true',
       },
     },
-    onUpdate: ({ editor: updatedEditor }) => onChange(updatedEditor.getJSON()),
+    onUpdate: ({ editor: updatedEditor, transaction }) => {
+      const previousText = transaction.before.textBetween(
+        0,
+        transaction.before.content.size,
+        '\n',
+      )
+      const currentDoc = updatedEditor.state.doc
+      const textChanged =
+        previousText !== currentDoc.textBetween(0, currentDoc.content.size, '\n')
+      onChange(updatedEditor.getJSON(), textChanged)
+    },
   })
 
   useEffect(() => {

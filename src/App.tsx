@@ -61,9 +61,9 @@ function App() {
     if (!noteRef.current.title.trim()) updateTitle('Untitled')
   }
 
-  const updateContent = (document: JSONContent) => {
+  const updateContent = (document: JSONContent, textChanged: boolean) => {
     updateNote({ document })
-    if (!isApplyingRef.current) setAppliedRange(null)
+    if (textChanged && !isApplyingRef.current) setAppliedRange(null)
   }
 
   const handlePinsChange = (nextPins: [PinTarget, PinTarget]) => {
@@ -175,12 +175,7 @@ function App() {
       return
     }
 
-    isApplyingRef.current = true
-    try {
-      applyHighlight(editor, nextRange, note.activePaletteId)
-    } finally {
-      isApplyingRef.current = false
-    }
+    applyHighlight(editor, nextRange, note.activePaletteId)
     setPins([
       { percent: leftPercent, target: leftTarget },
       { percent: rightPercent, target: rightTarget },
@@ -208,18 +203,13 @@ function App() {
     }
 
     const nextRange = { ...appliedRange, to: previousCharacter.from }
-    isApplyingRef.current = true
-    try {
-      editor.view.dispatch(
-        editor.state.tr.removeMark(
-          previousCharacter.from,
-          previousCharacter.to,
-          markType,
-        ),
-      )
-    } finally {
-      isApplyingRef.current = false
-    }
+    editor.view.dispatch(
+      editor.state.tr.removeMark(
+        previousCharacter.from,
+        previousCharacter.to,
+        markType,
+      ),
+    )
     setAppliedRange(nextRange)
     setActionMessage(null)
   }
