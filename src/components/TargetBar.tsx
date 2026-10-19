@@ -25,6 +25,7 @@ type TargetBarProps = {
   disabled?: boolean
 }
 
+export const MIN_BAR_TOP = 52
 const BAR_HEIGHT = 24
 const TARGET_OFFSET = BAR_HEIGHT + 8
 const INACTIVE_ZONE_PX = 8
@@ -107,7 +108,7 @@ export function TargetBar({
     if (draggingBar.current !== null && region) {
       const bounds = region.getBoundingClientRect()
       const nextTop = Math.max(
-        0,
+        MIN_BAR_TOP,
         Math.min(
           bounds.height - BAR_HEIGHT,
           event.clientY - bounds.top - draggingBar.current,

@@ -5,7 +5,7 @@ import { ColorDialog } from './components/ColorDialog'
 import { HelpPanel } from './components/HelpPanel'
 import { HoldRepeatButton } from './components/HoldRepeatButton'
 import { NoteEditor } from './components/NoteEditor'
-import { TargetBar } from './components/TargetBar'
+import { MIN_BAR_TOP, TargetBar } from './components/TargetBar'
 import {
   applyHighlight,
   getTargetRange,
@@ -55,7 +55,7 @@ function App() {
   const [colorDialog, setColorDialog] = useState<{ colorId: string | null } | null>(
     null,
   )
-  const [barTop, setBarTop] = useState(12)
+  const [barTop, setBarTop] = useState(MIN_BAR_TOP)
   const [showHelp, setShowHelp] = useState(false)
   const [, setAppliedRange] = useState<TextRange | null>(null)
   const appliedRangeRef = useRef<TextRange | null>(null)
@@ -440,41 +440,41 @@ function App() {
           />
 
           <div className="editor-targeting-region" ref={targetingRegionRef}>
+            <div className="target-track-area">
+              <div
+                className="range-adjust-controls"
+                style={{ top: barTop - MIN_BAR_TOP + 4 }}
+              >
+                <HoldRepeatButton
+                  disabled={isApplying}
+                  label="Decrement highlighted text"
+                  onRepeat={decrementHighlight}
+                >
+                  ‹
+                </HoldRepeatButton>
+                <HoldRepeatButton
+                  disabled={isApplying}
+                  label="Increment highlighted text"
+                  onRepeat={incrementHighlight}
+                >
+                  ›
+                </HoldRepeatButton>
+              </div>
+              <TargetBar
+                editor={editor}
+                regionRef={targetingRegionRef}
+                trackRef={targetTrackRef}
+                pins={pins}
+                barTop={barTop}
+                onBarTopChange={setBarTop}
+                onPinsChange={handlePinsChange}
+                disabled={isApplying}
+              />
+            </div>
             <div
-              className="range-adjust-controls"
-              style={{
-                top: Math.max(
-                  0,
-                  Math.min(
-                    barTop - 30,
-                    (targetingRegionRef.current?.clientHeight ?? 210) - 84,
-                  ),
-                ),
-              }}
+              className="bar-actions"
+              style={{ top: barTop - 7 }}
             >
-              <HoldRepeatButton
-                disabled={isApplying}
-                label="Decrement highlighted text"
-                onRepeat={decrementHighlight}
-              >
-                ‹
-              </HoldRepeatButton>
-              <HoldRepeatButton
-                disabled={isApplying}
-                label="Increment highlighted text"
-                onRepeat={incrementHighlight}
-              >
-                ›
-              </HoldRepeatButton>
-              <button
-                type="button"
-                className="none-button"
-                disabled={isApplying}
-                onClick={clearHighlights}
-                aria-label="Clear highlights from the selected range"
-              >
-                None
-              </button>
               <button
                 type="button"
                 className="apply-color-button"
@@ -490,19 +490,15 @@ function App() {
                   }}
                 />
               </button>
-            </div>
-
-            <div className="target-track-area">
-              <TargetBar
-                editor={editor}
-                regionRef={targetingRegionRef}
-                trackRef={targetTrackRef}
-                pins={pins}
-                barTop={barTop}
-                onBarTopChange={setBarTop}
-                onPinsChange={handlePinsChange}
+              <button
+                type="button"
+                className="none-button"
                 disabled={isApplying}
-              />
+                onClick={clearHighlights}
+                aria-label="Clear highlights from the selected range"
+              >
+                None
+              </button>
             </div>
             <div className="editor-stage">
               <div
