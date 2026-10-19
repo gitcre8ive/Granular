@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Start the app with `npm run dev`, enter a short passage, move the bar and pins, and see the blue outline track the exact endpoint characters. Refresh and confirm the note remains.
   Commit: `Build editable note and character targeting`
 
-- [ ] **2. You can apply, extend, and clear a precise highlight**
+- [x] **2. You can apply, extend, and clear a precise highlight**
   Becomes usable: The user applies a color to the full pin-bounded range, sees the highlight progress between endpoints, adjusts it with increment/decrement, and clears it with None without deleting text.
   Why now: Once exact targets are reliable, this slice proves the unique highlighting kernel end to end and checks that marks stay attached to text during ordinary edits.
   PRD ref: `prd.md > Highlight range selection`, `prd.md > Increment and decrement controls`, `prd.md > Editor input and persistence`
