@@ -37,14 +37,17 @@ function isSavedNote(value: unknown): value is SavedNote {
     typeof note.title === 'string' &&
     !!note.document &&
     Array.isArray(note.palette) &&
+    note.palette.length > 0 &&
     note.palette.every(
       (color) =>
         !!color &&
         typeof color.id === 'string' &&
         typeof color.label === 'string' &&
-        typeof color.hex === 'string',
+        typeof color.hex === 'string' &&
+        /^#[0-9a-f]{6}$/i.test(color.hex),
     ) &&
-    typeof note.activePaletteId === 'string'
+    typeof note.activePaletteId === 'string' &&
+    note.palette.some((color) => color.id === note.activePaletteId)
   )
 }
 

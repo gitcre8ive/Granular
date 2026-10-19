@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState, type CSSProperties } from 'react'
 import type { Editor, JSONContent } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'
+import { ColorDialog } from './components/ColorDialog'
 import { HoldRepeatButton } from './components/HoldRepeatButton'
 import { NoteEditor } from './components/NoteEditor'
 import { TargetBar } from './components/TargetBar'
@@ -13,7 +14,12 @@ import {
   getTextCharacterRanges,
   type TextRange,
 } from './lib/highlighting'
-import { loadSavedNote, saveNote, type SavedNote } from './lib/storage'
+import {
+  loadSavedNote,
+  saveNote,
+  type PaletteColor,
+  type SavedNote,
+} from './lib/storage'
 import {
   targetPercentForCharacter,
   type PinTarget,
@@ -44,6 +50,9 @@ function App() {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [storageMessage, setStorageMessage] = useState(initialLoad.message)
   const [pins, setPins] = useState<[PinTarget, PinTarget]>(DEFAULT_PIN_RANGE)
+  const [colorDialog, setColorDialog] = useState<{ colorId: string | null } | null>(
+    null,
+  )
   const [barTop, setBarTop] = useState(12)
   const [, setAppliedRange] = useState<TextRange | null>(null)
   const appliedRangeRef = useRef<TextRange | null>(null)
@@ -77,6 +86,46 @@ function App() {
   )
 
   const updateTitle = (title: string) => updateNote({ title })
+
+  function savePaletteColor(hex: string) {
+    if (!colorDialog) return
+
+    const currentNote = noteRef.current
+    if (colorDialog.colorId) {
+      const colorExists = currentNote.palette.some(
+        (color) => color.id === colorDialog.colorId,
+      )
+      if (!colorExists) {
+        setActionMessage('That palette color is no longer available.')
+        setColorDialog(null)
+        return
+      }
+
+      updateNote({
+        palette: currentNote.palette.map((color) =>
+          color.id === colorDialog.colorId ? { ...color, hex } : color,
+        ),
+      })
+    } else {
+      if (typeof window.crypto.randomUUID !== 'function') {
+        setActionMessage('This browser cannot create a new color identifier.')
+        return
+      }
+
+      const color: PaletteColor = {
+        id: window.crypto.randomUUID(),
+        label: `Color ${currentNote.palette.length + 1}`,
+        hex,
+      }
+      updateNote({
+        palette: [...currentNote.palette, color],
+        activePaletteId: color.id,
+      })
+    }
+
+    setColorDialog(null)
+    setActionMessage(null)
+  }
 
   const saveTitleOnBlur = () => {
     if (!noteRef.current.title.trim()) updateTitle('Untitled')
@@ -328,15 +377,38 @@ function App() {
 
       <div className="workspace">
         <aside className="palette-sidebar" aria-label="Highlight colors">
-          <button
-            className="palette-swatch is-selected"
-            type="button"
-            aria-pressed="true"
-            aria-label="Default yellow highlight color"
-            title="Default yellow"
-            style={{ backgroundColor: note.palette[0]?.hex ?? '#FFFF00' }}
-          />
           <p className="sidebar-hint">Your colors</p>
+          <div className="palette-grid">
+            {note.palette.map((color) => (
+              <div className="palette-item" key={color.id}>
+                <button
+                  className={`palette-swatch${note.activePaletteId === color.id ? ' is-selected' : ''}`}
+                  type="button"
+                  aria-pressed={note.activePaletteId === color.id}
+                  aria-label={`Use ${color.label} highlight color`}
+                  title={`Use ${color.label}`}
+                  style={{ backgroundColor: color.hex }}
+                  onClick={() => updateNote({ activePaletteId: color.id })}
+                />
+                <button
+                  className="palette-edit-button"
+                  type="button"
+                  aria-label={`Edit ${color.label} color`}
+                  title={`Edit ${color.label}`}
+                  onClick={() => setColorDialog({ colorId: color.id })}
+                >
+                  ✎
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            className="add-color-button"
+            type="button"
+            onClick={() => setColorDialog({ colorId: null })}
+          >
+            Add pointer bar
+          </button>
         </aside>
 
         <section className="editor-column" aria-label="Note editor">
@@ -395,7 +467,13 @@ function App() {
                 onClick={applyCurrentHighlight}
                 aria-label="Apply highlight to the selected range"
               >
-                <span style={{ backgroundColor: note.palette[0]?.hex ?? '#FFFF00' }} />
+                <span
+                  style={{
+                    backgroundColor:
+                      note.palette.find((color) => color.id === note.activePaletteId)?.hex ??
+                      '#FFFF00',
+                  }}
+                />
               </button>
             </div>
 
@@ -430,6 +508,18 @@ function App() {
           </p>
         </section>
       </div>
+      {colorDialog && (
+        <ColorDialog
+          key={colorDialog.colorId ?? 'new-color'}
+          color={
+            colorDialog.colorId
+              ? note.palette.find((color) => color.id === colorDialog.colorId) ?? null
+              : null
+          }
+          onCancel={() => setColorDialog(null)}
+          onSave={savePaletteColor}
+        />
+      )}
     </main>
   )
 }
