@@ -2,18 +2,26 @@ import { useEffect } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core'
+import { GranularHighlight } from '../lib/highlighting'
 import { TargetDecorations } from '../lib/targeting'
 
 type NoteEditorProps = {
   content: JSONContent
+  editable: boolean
   onChange: (content: JSONContent) => void
   onEditorReady: (editor: TiptapEditor | null) => void
 }
 
-export function NoteEditor({ content, onChange, onEditorReady }: NoteEditorProps) {
+export function NoteEditor({
+  content,
+  editable,
+  onChange,
+  onEditorReady,
+}: NoteEditorProps) {
   const editor = useEditor({
-    extensions: [StarterKit, TargetDecorations],
+    extensions: [StarterKit, GranularHighlight, TargetDecorations],
     content,
+    editable,
     editorProps: {
       attributes: {
         class: 'note-editor',
@@ -28,6 +36,10 @@ export function NoteEditor({ content, onChange, onEditorReady }: NoteEditorProps
     onEditorReady(editor)
     return () => onEditorReady(null)
   }, [editor, onEditorReady])
+
+  useEffect(() => {
+    editor?.setEditable(editable)
+  }, [editor, editable])
 
   return <EditorContent editor={editor} />
 }

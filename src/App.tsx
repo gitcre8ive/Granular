@@ -6,6 +6,8 @@ import { TargetBar } from './components/TargetBar'
 import {
   applyHighlight,
   getTargetRange,
+  getTextCharacterAfter,
+  getTextCharacterBefore,
   getTextCharacterRanges,
   type TextRange,
 } from './lib/highlighting'
@@ -131,11 +133,7 @@ function App() {
       return
     }
 
-    const nextCharacter = getTextCharacterRanges(
-      editor.state.doc,
-      range.to,
-      editor.state.doc.content.size,
-    )[0]
+    const nextCharacter = getTextCharacterAfter(editor.state.doc, range.to)
     if (!nextCharacter) {
       setActionMessage('The highlight already reaches the end of the note.')
       return
@@ -146,8 +144,9 @@ function App() {
       return
     }
 
-    applyHighlight(editor, { from: range.from, to: nextCharacter.to }, note.activePaletteId)
-    setAppliedRange({ from: range.from, to: nextCharacter.to })
+    const nextRange = { from: range.from, to: nextCharacter.to }
+    applyHighlight(editor, nextRange, note.activePaletteId)
+    setAppliedRange(nextRange)
     setActionMessage(null)
   }
 
@@ -157,13 +156,8 @@ function App() {
       return
     }
 
-    const characters = getTextCharacterRanges(
-      editor.state.doc,
-      appliedRange.from,
-      appliedRange.to,
-    )
-    const lastCharacter = characters.at(-1)
-    if (!lastCharacter || lastCharacter.from <= appliedRange.from) {
+    const previousCharacter = getTextCharacterBefore(editor.state.doc, appliedRange.to)
+    if (!previousCharacter || previousCharacter.from <= appliedRange.from) {
       setActionMessage('The left pin is the decrement limit.')
       return
     }
@@ -174,14 +168,15 @@ function App() {
       return
     }
 
+    const nextRange = { ...appliedRange, to: previousCharacter.from }
     editor.view.dispatch(
       editor.state.tr.removeMark(
-        lastCharacter.from,
-        lastCharacter.to,
+        previousCharacter.from,
+        previousCharacter.to,
         markType,
       ),
     )
-    setAppliedRange({ ...appliedRange, to: lastCharacter.from })
+    setAppliedRange(nextRange)
     setActionMessage(null)
   }
 
