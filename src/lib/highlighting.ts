@@ -91,6 +91,19 @@ export function getTextCharacterBefore(
   return previous.at(-1) ?? null
 }
 
+export function getTextCharacterAtPosition(
+  doc: ProseMirrorNode,
+  position: number,
+): TextRange | null {
+  const characters = getTextCharacterRanges(doc)
+  return (
+    characters.find(({ from, to }) => from <= position && position < to) ??
+    characters.find(({ from }) => from >= position) ??
+    characters.at(-1) ??
+    null
+  )
+}
+
 export function applyHighlight(editor: Editor, range: TextRange, paletteId: string) {
   const markType = editor.schema.marks.granularHighlight
   if (!markType) return false

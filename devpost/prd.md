@@ -53,6 +53,7 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - The editor content is retained in local browser storage and remains after a refresh.
 - For the prototype, the last edited version of the active note is the version stored locally; there is no full note-library flow yet.
 - The app should allow ordinary system text editing and deletion behavior to continue without conflicting with the highlight layer.
+- When text is inserted or deleted inside an applied highlight, the active range and endpoint pins stay aligned with the resulting highlighted text; inserted text inherits the mark.
 
 ### Highlight range selection
 

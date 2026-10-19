@@ -2,13 +2,18 @@ import { useEffect } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core'
+import type { Transaction } from '@tiptap/pm/state'
 import { GranularHighlight } from '../lib/highlighting'
 import { TargetDecorations } from '../lib/targeting'
 
 type NoteEditorProps = {
   content: JSONContent
   editable: boolean
-  onChange: (content: JSONContent, textChanged: boolean) => void
+  onChange: (
+    content: JSONContent,
+    transaction: Transaction,
+    textChanged: boolean,
+  ) => void
   onEditorReady: (editor: TiptapEditor | null) => void
 }
 
@@ -38,7 +43,7 @@ export function NoteEditor({
       const currentDoc = updatedEditor.state.doc
       const textChanged =
         previousText !== currentDoc.textBetween(0, currentDoc.content.size, '\n')
-      onChange(updatedEditor.getJSON(), textChanged)
+      onChange(updatedEditor.getJSON(), transaction, textChanged)
     },
   })
 

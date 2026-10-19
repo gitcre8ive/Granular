@@ -1,11 +1,13 @@
 import { useCallback, useRef, useState, type CSSProperties } from 'react'
 import type { Editor, JSONContent } from '@tiptap/core'
+import type { Transaction } from '@tiptap/pm/state'
 import { HoldRepeatButton } from './components/HoldRepeatButton'
 import { NoteEditor } from './components/NoteEditor'
 import { TargetBar } from './components/TargetBar'
 import {
   applyHighlight,
   getTargetRange,
+  getTextCharacterAtPosition,
   getTextCharacterAfter,
   getTextCharacterBefore,
   getTextCharacterRanges,
@@ -22,6 +24,19 @@ const DEFAULT_PIN_RANGE: [PinTarget, PinTarget] = [
   { percent: 100, target: null },
 ]
 
+function pinForCharacter(
+  editor: Editor,
+  track: HTMLElement,
+  character: TextRange,
+): PinTarget | null {
+  const target = {
+    position: character.from,
+    length: character.to - character.from,
+  }
+  const percent = targetPercentForCharacter(editor, target, track)
+  return percent === null ? null : { percent, target }
+}
+
 function App() {
   const [initialLoad] = useState(loadSavedNote)
   const [note, setNote] = useState(initialLoad.note)
@@ -30,13 +45,19 @@ function App() {
   const [storageMessage, setStorageMessage] = useState(initialLoad.message)
   const [pins, setPins] = useState<[PinTarget, PinTarget]>(DEFAULT_PIN_RANGE)
   const [barTop, setBarTop] = useState(12)
-  const [appliedRange, setAppliedRange] = useState<TextRange | null>(null)
+  const [, setAppliedRange] = useState<TextRange | null>(null)
+  const appliedRangeRef = useRef<TextRange | null>(null)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
   const [isApplying, setIsApplying] = useState(false)
   const isApplyingRef = useRef(false)
   const targetingRegionRef = useRef<HTMLDivElement>(null)
   const targetTrackRef = useRef<HTMLDivElement>(null)
   const targetRange = getTargetRange(pins)
+
+  function updateAppliedRange(range: TextRange | null) {
+    appliedRangeRef.current = range
+    setAppliedRange(range)
+  }
 
   const paletteVariables = Object.fromEntries(
     note.palette.map((color) => [`--granular-color-${color.id}`, color.hex]),
@@ -61,14 +82,71 @@ function App() {
     if (!noteRef.current.title.trim()) updateTitle('Untitled')
   }
 
-  const updateContent = (document: JSONContent, textChanged: boolean) => {
+  const updateContent = (
+    document: JSONContent,
+    transaction: Transaction,
+    textChanged: boolean,
+  ) => {
     updateNote({ document })
-    if (textChanged && !isApplyingRef.current) setAppliedRange(null)
+    if (!textChanged || isApplyingRef.current) return
+
+    const currentEditor = editor
+    const track = targetTrackRef.current
+    if (!currentEditor || !track) {
+      updateAppliedRange(null)
+      return
+    }
+
+    const doc = currentEditor.state.doc
+    const activeRange = appliedRangeRef.current
+    if (activeRange) {
+      const mappedFrom = transaction.mapping.map(activeRange.from, -1)
+      const mappedTo = transaction.mapping.map(activeRange.to, 1)
+      const characters = getTextCharacterRanges(
+        doc,
+        Math.min(mappedFrom, mappedTo),
+        Math.max(mappedFrom, mappedTo),
+      )
+      const firstCharacter = characters[0]
+      const lastCharacter = characters.at(-1)
+      if (firstCharacter && lastCharacter) {
+        const leftPin = pinForCharacter(currentEditor, track, firstCharacter)
+        const rightPin = pinForCharacter(currentEditor, track, lastCharacter)
+        if (leftPin && rightPin) {
+          setPins([leftPin, rightPin])
+          updateAppliedRange({
+            from: firstCharacter.from,
+            to: lastCharacter.to,
+          })
+          return
+        }
+      }
+
+      updateAppliedRange(null)
+    }
+
+    setPins((currentPins) =>
+      currentPins.map((pin) => {
+        if (!pin.target) return pin
+
+        const position = transaction.mapping.map(pin.target.position, 1)
+        const character = getTextCharacterAtPosition(doc, position)
+        if (!character) return { ...pin, target: null }
+
+        return pinForCharacter(currentEditor, track, character) ?? {
+          ...pin,
+          target: {
+            position: character.from,
+            length: character.to - character.from,
+          },
+        }
+      }) as [PinTarget, PinTarget],
+    )
   }
 
   const handlePinsChange = (nextPins: [PinTarget, PinTarget]) => {
     setPins(nextPins)
-    setAppliedRange(null)
+    updateAppliedRange(null)
     setActionMessage(null)
   }
 
@@ -122,7 +200,7 @@ function App() {
         }
       }
 
-      setAppliedRange(targetRange)
+      updateAppliedRange(targetRange)
       setActionMessage('Highlight applied.')
     } finally {
       setIsApplying(false)
@@ -131,7 +209,7 @@ function App() {
   }
 
   function incrementHighlight() {
-    const range = appliedRange ?? targetRange
+    const range = appliedRangeRef.current ?? targetRange
     if (!editor || !range) {
       setActionMessage('Apply a highlight to the selected range before extending it.')
       return
@@ -180,18 +258,19 @@ function App() {
       { percent: leftPercent, target: leftTarget },
       { percent: rightPercent, target: rightTarget },
     ])
-    setAppliedRange(nextRange)
+    updateAppliedRange(nextRange)
     setActionMessage(null)
   }
 
   function decrementHighlight() {
-    if (!editor || !appliedRange) {
+    const currentRange = appliedRangeRef.current
+    if (!editor || !currentRange) {
       setActionMessage('Apply a highlight to the selected range before reducing it.')
       return
     }
 
-    const previousCharacter = getTextCharacterBefore(editor.state.doc, appliedRange.to)
-    if (!previousCharacter || previousCharacter.from <= appliedRange.from) {
+    const previousCharacter = getTextCharacterBefore(editor.state.doc, currentRange.to)
+    if (!previousCharacter || previousCharacter.from <= currentRange.from) {
       setActionMessage('The left pin is the decrement limit.')
       return
     }
@@ -202,7 +281,7 @@ function App() {
       return
     }
 
-    const nextRange = { ...appliedRange, to: previousCharacter.from }
+    const nextRange = { ...currentRange, to: previousCharacter.from }
     editor.view.dispatch(
       editor.state.tr.removeMark(
         previousCharacter.from,
@@ -210,12 +289,12 @@ function App() {
         markType,
       ),
     )
-    setAppliedRange(nextRange)
+    updateAppliedRange(nextRange)
     setActionMessage(null)
   }
 
   function clearHighlights() {
-    const range = appliedRange ?? targetRange
+    const range = appliedRangeRef.current ?? targetRange
     if (!editor || !range) {
       setActionMessage('Target a character range before clearing highlights.')
       return
@@ -229,7 +308,7 @@ function App() {
 
     const transaction = editor.state.tr.removeMark(range.from, range.to, markType)
     if (transaction.docChanged) editor.view.dispatch(transaction)
-    setAppliedRange(null)
+    updateAppliedRange(null)
     setActionMessage(
       transaction.docChanged ? 'Highlights cleared.' : 'There are no highlights in this range.',
     )

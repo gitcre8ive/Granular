@@ -52,7 +52,7 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
-- [ ] Core highlight loop explored — after slice 2, try applying, adjusting, editing, and clearing highlights so feedback can shape the palette and final screen.
+- [ ] Core highlight loop explored — after slice 2, try applying, adjusting, editing, and clearing highlights; verify endpoint pins follow edits inside an applied range.
 - [ ] Palette behavior explored — after slice 3, add and edit colors and confirm existing highlights follow the palette changes.
 - [ ] Final kick-the-tires exploration and feedback completed — after slice 4, run the complete demo journey and report problems or refinements.
 
@@ -73,6 +73,7 @@ Reflection: [offered/answered/declined/already covered; personal response belong
 Activity mode: [live app, static fallback, focused alternative, prior practice, or recap]
 
 ## Revisions
+- Map active highlight ranges and endpoint pins through text edits — learner testing showed inserted text inherited the highlight but the endpoint pin stayed at its old document position.
 - Added hands-on pauses after slices 1, 2, and 3 — the learner chose Fast mode to save time and credits while still testing the app as it is built; each pause focuses on a distinct behavior and gives feedback time to shape the remaining work.
 - Narrowed the pin inactive zones to match the editor's responsive text insets — hands-on feedback showed that fixed-width end zones blocked characters near the start and end of a line.
 - Added a measured-character fallback when the editor's point lookup cannot resolve a pin position near the text edges — retesting showed that the narrower red zones fixed the boundary size but did not yet activate every edge character.

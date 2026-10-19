@@ -72,7 +72,7 @@ Implements `prd.md > Editor input and persistence`.
 
 ### Rich Text Editor
 
-Wraps Tiptap. Supports typing, paste, normal cursor movement and text deletion, paragraphs, and highlight marks. Text edits inside a highlighted passage preserve the mark on the remaining passage and newly inserted text within it.
+Wraps Tiptap. Supports typing, paste, normal cursor movement and text deletion, paragraphs, and highlight marks. Text edits inside a highlighted passage preserve the mark on the remaining passage and newly inserted text within it. Map the active range and endpoint pins through text-edit transactions so the pins remain aligned with the resulting highlighted boundaries.
 
 Implements `prd.md > Editor input and persistence` and `prd.md > Highlight range selection`.
 
