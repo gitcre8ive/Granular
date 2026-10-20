@@ -47,7 +47,7 @@
       <header>
         <p class="eyebrow">Granular · local-first proof of concept</p>
         <h1>How pointer pins find characters</h1>
-        <p class="intro">Granular is a note editor for precise, multicolor text highlighting. A pin's screen position is translated into a real text character, and the active note and palette are saved in this browser. There is no account or remote service.</p>
+        <p class="intro">Granular is a note editor for precise, multicolor text highlighting. A pin's screen position is translated into a real text character; selected pins and the bar can also move by keyboard. The palette and note are saved in this browser. Controls can be hidden while the title, Help, and editable note remain available. There is no account or remote service.</p>
       </header>
 
       <section class="panel" aria-labelledby="flow-heading">
@@ -55,7 +55,7 @@
         <figure>
           <svg class="flow" viewBox="0 0 820 142" role="img" aria-labelledby="flow-title flow-desc">
             <title id="flow-title">Pointer position becomes a character target</title>
-            <desc id="flow-desc">Dragging a pin provides screen coordinates. Targeting code maps them to a grapheme in the editor. The app records the pin target and displays a blue outline around the character.</desc>
+            <desc id="flow-desc">Dragging or moving a selected pin with an arrow key provides a position. Targeting code maps it to a grapheme in the editor. The app records the pin target and displays a blue outline around the character.</desc>
             <defs>
               <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
                 <path d="M0,0 L0,6 L9,3 z" fill="#006d77"></path>
@@ -77,7 +77,7 @@
             <text x="763" y="64" text-anchor="middle">Blue</text>
             <text x="763" y="87" text-anchor="middle">outline</text>
           </svg>
-          <figcaption>Coordinate conversion keeps the pin attached to a character the user can see and target.</figcaption>
+          <figcaption>Pointer geometry and keyboard steps share the same character targets; moving a pin changes targeting, not highlight marks.</figcaption>
         </figure>
       </section>
 
@@ -87,11 +87,11 @@
         <ol class="route">
           <li>
             <h3>Pointer input — <a href="../src/components/TargetBar.tsx"><code>src/components/TargetBar.tsx</code></a></h3>
-            <code>targetPin</code> combines the dragged pin's horizontal position with the bar's text-line height, then asks the targeting helper which character is underneath.
+            <code>targetPin</code> combines the dragged pin's horizontal position with the bar's text-line height. Left/Right on a focused pin moves by character; Up/Down on the focused bar moves it vertically. Clicking or focusing elsewhere releases keyboard targeting.
           </li>
           <li>
             <h3>Coordinate geometry — <a href="../src/lib/targeting.ts"><code>src/lib/targeting.ts</code></a></h3>
-            <code>targetAtPoint</code> compares the pointer with measured grapheme rectangles; <code>targetPercentForCharacter</code> maps a character back to the bar when a pin must move with a range.
+            <code>targetAtPoint</code> compares the pointer with measured grapheme rectangles. <code>adjacentCharacterOnLine</code> moves a targeted pin without crossing a visual line; <code>characterInDirectionAtPoint</code> lets an untargeted pin step inward from a red zone. <code>targetPercentForCharacter</code> positions the pin on the bar.
           </li>
           <li>
             <h3>Range and feedback — <a href="../src/lib/highlighting.ts"><code>src/lib/highlighting.ts</code></a></h3>
@@ -106,20 +106,21 @@
           <li>Pin hit-testing and bar geometry: <a href="../src/components/TargetBar.tsx"><code>TargetBar.tsx</code></a> and <a href="../src/lib/targeting.ts"><code>targetAtPoint</code></a>.</li>
           <li>Range boundaries, grapheme stepping, and highlight marks: <a href="../src/lib/highlighting.ts"><code>highlighting.ts</code></a> and <a href="../src/App.tsx"><code>incrementHighlight</code> / <code>decrementHighlight</code></a>.</li>
           <li>Palette choices and color conversion: <a href="../src/components/ColorDialog.tsx"><code>ColorDialog.tsx</code></a> and <a href="../src/lib/color.ts"><code>color.ts</code></a>.</li>
+          <li>Hide/restore state and its always-available control: <a href="../src/App.tsx"><code>App.tsx > showControls</code></a>. Help copy lives in <a href="../src/components/HelpPanel.tsx"><code>HelpPanel.tsx</code></a>; the Lucide image files are in <code>devpost/images/</code>.</li>
           <li>Browser persistence and its failure messages: <a href="../src/lib/storage.ts"><code>storage.ts</code></a>.</li>
         </ul>
       </section>
 
       <section class="practice" aria-labelledby="practice-heading">
         <h2 id="practice-heading">A practice to reuse</h2>
-        <p>The approved <a href="./scope.md"><code>scope.md</code></a> made precise highlighting the unique kernel and cut the notes library and trash flow. The <a href="./checklist.md"><code>checklist.md</code></a> put pin-to-character mapping early, where hands-on checks with spaces, punctuation, wrapped lines, and edges exposed real targeting problems before polish.</p>
+        <p>The approved <a href="./scope.md"><code>scope.md</code></a> made precise highlighting the unique kernel and cut the notes library and trash flow. The <a href="./checklist.md"><code>checklist.md</code></a> put pin-to-character mapping early, where hands-on checks with spaces, punctuation, wrapped lines, edges, and red-zone keyboard entry exposed real targeting problems before polish. The later visibility toggle was explicitly added as a controlled iteration rather than restarting the completed project.</p>
         <p>On another project, name the one behavior that proves the idea, cut adjacent features that do not prove it, and test the riskiest assumption with representative input before building around it.</p>
       </section>
 
       <section aria-labelledby="run-heading">
         <h2 id="run-heading">Run the app again</h2>
         <p>From the repository root, run <code>npm install</code> if dependencies are not installed, then <code>npm run dev</code> and open the local URL printed by Vite (normally <code>http://localhost:5173</code>).</p>
-        <p class="meta">Source snapshot: commit <code>e81561d</code>. This standalone map works offline and may drift if the source changes later.</p>
+        <p class="meta">Source snapshot: commit <code>fb0e5ae</code>. This standalone map works offline and may drift if the source changes later.</p>
       </section>
     </main>
   </body>

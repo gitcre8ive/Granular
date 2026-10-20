@@ -59,7 +59,7 @@ Build mode: fast
   Learner check: Select each pin, including in both red end zones with the bar above and inside the editor, and use Left/Right to enter the closest text line and stop at its first/last character without changing highlights; select the bar and use Up/Down; then switch back to trackpad movement and confirm normal arrow movement returns in the editor.
   Commit: `Add keyboard targeting controls`
 
-- [ ] **6. You can hide and restore the targeting controls**
+- [x] **6. You can hide and restore the targeting controls**
   Becomes usable: One accessible eye/eye-off toggle hides and restores the palette, add-color action, bar, pins, range-adjust buttons, apply-color button, and None while leaving the note, title, app name, Help, and toggle usable.
   Why now: Once targeting remains reliable by keyboard and pointer, visibility can be added without obscuring the core editor or interfering with text entry.
   PRD ref: `prd.md > Post-5-build Iteration Requirements > Control visibility and icons`
@@ -76,7 +76,7 @@ Build mode: fast
 - [x] Palette behavior explored — learner verified add/cancel, color switching, editing existing colors, recoloring existing highlights, and persistence after refresh.
 - [x] Final kick-the-tires exploration and feedback completed — after the final adjustments, the learner retried the viewport and editor scrolling and reported no remaining issues.
 - [x] Keyboard targeting explored — learner confirmed Left/Right pin targeting and Up/Down bar movement, preserved editor arrows and pointer dragging, and after a fix confirmed pins move inward from both red zones with the bar above or inside the editor.
-- [ ] Hide/restore and final demo flow explored — confirm hidden controls and persistent editor/Help remain usable, then retry the updated highlight workflow.
+- [x] Hide/restore and final demo flow explored — learner confirmed the requested controls hide and restore, Help remains available and explains the new keyboard behavior, and the Lucide buttons retain their actions.
 
 ## Final Review
 
@@ -84,18 +84,18 @@ Build mode: fast
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
 - [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
-- [ ] Post-5-build iteration review complete — keyboard targeting and hide/restore feedback resolved, verified, retried, and learner confirms this iteration is ready.
+- [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [ ] `devpost/app-map.html` refreshed for the keyboard-targeting and visibility iteration, checked, and shown.
+- [x] `devpost/app-map.html` refreshed for the keyboard-targeting and visibility iteration, checked, and shown.
 
-Activity and evidence: Prior-practice recap of pointer-to-character geometry; the learner confirmed the final viewport behavior and editor scrolling, and reported no remaining issues.
-Route and stops: Reference route prepared, not toured interactively — `src/components/TargetBar.tsx > targetPin`, `src/lib/targeting.ts > targetAtPoint` and `targetPercentForCharacter`, `src/lib/highlighting.ts > getTargetRange`.
-Edit outcome: Not applicable; the learner said no extra POC changes were needed.
+Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, and icon actions. `npm run build`, Vite asset/module smoke checks, and offline app-map link checks passed.
+Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and keyboard handling; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > showControls`; `src/components/HelpPanel.tsx`.
+Edit outcome: No optional learning-tour edit; the learner requested the product enhancements and confirmed the resulting interactions work.
 Reflection: Already covered; personal response is recorded only in the ignored learner profile.
 Activity mode: Prior practice/recap.
 
