@@ -49,7 +49,7 @@ Build mode: fast
   Learner check: Try the app from a fresh state: enter and title a note, add and edit colors, target and highlight text, adjust and clear highlights, read Help, then refresh. Tell me what feels confusing or needs changing before final review.
   Commit: `Complete and polish editor experience`
 
-- [ ] **5. You can target text and move the bar with arrow keys**
+- [x] **5. You can target text and move the bar with arrow keys**
   Becomes usable: A clicked or focused pin moves by one character on its current visual line with Left/Right, and the selected bar moves vertically with Up/Down, while ordinary editor arrows and mouse/trackpad dragging continue to work.
   Why now: The pin-to-character geometry is the riskiest part of this extension, so verify it before adding visibility polish; keyboard movement must reuse precise targets without changing highlights.
   PRD ref: `prd.md > Post-5-build Iteration Requirements > Keyboard targeting`
@@ -75,7 +75,7 @@ Build mode: fast
 - [x] Core highlight loop explored — learner verified applying, incrementing across a wrapped line, decrementing one character, clearing with None without deleting text, and keeping the right pin aligned after inserting text inside a highlight.
 - [x] Palette behavior explored — learner verified add/cancel, color switching, editing existing colors, recoloring existing highlights, and persistence after refresh.
 - [x] Final kick-the-tires exploration and feedback completed — after the final adjustments, the learner retried the viewport and editor scrolling and reported no remaining issues.
-- [ ] Keyboard targeting explored — confirm line-boundary behavior, bar movement, ordinary editor arrows, and switching from keyboard back to pointer movement.
+- [x] Keyboard targeting explored — learner confirmed Left/Right pin targeting and Up/Down bar movement, preserved editor arrows and pointer dragging, and after a fix confirmed pins move inward from both red zones with the bar above or inside the editor.
 - [ ] Hide/restore and final demo flow explored — confirm hidden controls and persistent editor/Help remain usable, then retry the updated highlight workflow.
 
 ## Final Review

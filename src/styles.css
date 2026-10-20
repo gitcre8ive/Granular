@@ -102,6 +102,10 @@ input:focus-visible {
   align-items: start;
 }
 
+.workspace.controls-hidden {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .palette-sidebar {
   display: flex;
   flex-direction: column;
@@ -412,6 +416,30 @@ input:focus-visible {
   gap: 8px;
 }
 
+.control-visibility-button {
+  position: absolute;
+  right: 0;
+  z-index: 4;
+  display: grid;
+  width: 112px;
+  min-height: 48px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.control-visibility-button img {
+  width: 26px;
+  height: 26px;
+}
+
+.control-visibility-button:hover {
+  border-color: var(--teal);
+}
+
 .step-button,
 .apply-color-button,
 .none-button {
@@ -677,6 +705,11 @@ input:focus-visible {
 
   .bar-actions {
     gap: 6px;
+  }
+
+  .control-visibility-button {
+    width: 102px;
+    min-height: 44px;
   }
 
   .target-track-area,

@@ -56,6 +56,7 @@ function App() {
     null,
   )
   const [barTop, setBarTop] = useState(MIN_BAR_TOP)
+  const [showControls, setShowControls] = useState(true)
   const [showHelp, setShowHelp] = useState(false)
   const [, setAppliedRange] = useState<TextRange | null>(null)
   const appliedRangeRef = useRef<TextRange | null>(null)
@@ -390,41 +391,43 @@ function App() {
         </button>
       </header>
 
-      <div className="workspace">
-        <aside className="palette-sidebar" aria-label="Highlight colors">
-          <p className="sidebar-hint">Your colors</p>
-          <div className="palette-grid">
-            {note.palette.map((color) => (
-              <div className="palette-item" key={color.id}>
-                <button
-                  className={`palette-swatch${note.activePaletteId === color.id ? ' is-selected' : ''}`}
-                  type="button"
-                  aria-pressed={note.activePaletteId === color.id}
-                  aria-label={`Use ${color.label} highlight color`}
-                  title={`Use ${color.label}`}
-                  style={{ backgroundColor: color.hex }}
-                  onClick={() => updateNote({ activePaletteId: color.id })}
-                />
-                <button
-                  className="palette-edit-button"
-                  type="button"
-                  aria-label={`Edit ${color.label} color`}
-                  title={`Edit ${color.label}`}
-                  onClick={() => setColorDialog({ colorId: color.id })}
-                >
-                  ✎
-                </button>
-              </div>
-            ))}
-          </div>
-          <button
-            className="add-color-button"
-            type="button"
-            onClick={() => setColorDialog({ colorId: null })}
-          >
-            Add pointer bar
-          </button>
-        </aside>
+      <div className={`workspace${showControls ? '' : ' controls-hidden'}`}>
+        {showControls && (
+          <aside className="palette-sidebar" aria-label="Highlight colors">
+            <p className="sidebar-hint">Your colors</p>
+            <div className="palette-grid">
+              {note.palette.map((color) => (
+                <div className="palette-item" key={color.id}>
+                  <button
+                    className={`palette-swatch${note.activePaletteId === color.id ? ' is-selected' : ''}`}
+                    type="button"
+                    aria-pressed={note.activePaletteId === color.id}
+                    aria-label={`Use ${color.label} highlight color`}
+                    title={`Use ${color.label}`}
+                    style={{ backgroundColor: color.hex }}
+                    onClick={() => updateNote({ activePaletteId: color.id })}
+                  />
+                  <button
+                    className="palette-edit-button"
+                    type="button"
+                    aria-label={`Edit ${color.label} color`}
+                    title={`Edit ${color.label}`}
+                    onClick={() => setColorDialog({ colorId: color.id })}
+                  >
+                    ✎
+                  </button>
+                </div>
+              ))}
+            </div>
+            <button
+              className="add-color-button"
+              type="button"
+              onClick={() => setColorDialog({ colorId: null })}
+            >
+              Add pointer bar
+            </button>
+          </aside>
+        )}
 
         <section className="editor-column" aria-label="Note editor">
           <label className="title-label" htmlFor="note-title">Note title</label>
@@ -440,74 +443,93 @@ function App() {
           />
 
           <div className="editor-targeting-region" ref={targetingRegionRef}>
-            <div className="target-track-area">
-              <div
-                className="range-adjust-controls"
-                style={{ top: barTop - MIN_BAR_TOP + 4 }}
-              >
-                <HoldRepeatButton
-                  disabled={isApplying}
-                  label="Decrement highlighted text"
-                  onRepeat={decrementHighlight}
-                >
-                  <img
-                    src="/devpost/images/square-chevron-left.svg"
-                    alt=""
-                    aria-hidden="true"
+            {showControls && (
+              <>
+                <div className="target-track-area">
+                  <div
+                    className="range-adjust-controls"
+                    style={{ top: barTop - MIN_BAR_TOP + 4 }}
+                  >
+                    <HoldRepeatButton
+                      disabled={isApplying}
+                      label="Decrement highlighted text"
+                      onRepeat={decrementHighlight}
+                    >
+                      <img
+                        src="/devpost/images/square-chevron-left.svg"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    </HoldRepeatButton>
+                    <HoldRepeatButton
+                      disabled={isApplying}
+                      label="Increment highlighted text"
+                      onRepeat={incrementHighlight}
+                    >
+                      <img
+                        src="/devpost/images/square-chevron-right.svg"
+                        alt=""
+                        aria-hidden="true"
+                      />
+                    </HoldRepeatButton>
+                  </div>
+                  <TargetBar
+                    editor={editor}
+                    regionRef={targetingRegionRef}
+                    trackRef={targetTrackRef}
+                    pins={pins}
+                    barTop={barTop}
+                    onBarTopChange={setBarTop}
+                    onPinsChange={handlePinsChange}
+                    disabled={isApplying}
                   />
-                </HoldRepeatButton>
-                <HoldRepeatButton
-                  disabled={isApplying}
-                  label="Increment highlighted text"
-                  onRepeat={incrementHighlight}
+                </div>
+                <div
+                  className="bar-actions"
+                  style={{ top: barTop - 7 }}
                 >
-                  <img
-                    src="/devpost/images/square-chevron-right.svg"
-                    alt=""
-                    aria-hidden="true"
-                  />
-                </HoldRepeatButton>
-              </div>
-              <TargetBar
-                editor={editor}
-                regionRef={targetingRegionRef}
-                trackRef={targetTrackRef}
-                pins={pins}
-                barTop={barTop}
-                onBarTopChange={setBarTop}
-                onPinsChange={handlePinsChange}
-                disabled={isApplying}
-              />
-            </div>
-            <div
-              className="bar-actions"
-              style={{ top: barTop - 7 }}
+                  <button
+                    type="button"
+                    className="apply-color-button"
+                    disabled={isApplying}
+                    onClick={applyCurrentHighlight}
+                    aria-label="Apply highlight to the selected range"
+                  >
+                    <span
+                      style={{
+                        backgroundColor:
+                          note.palette.find((color) => color.id === note.activePaletteId)?.hex ??
+                          '#FFFF00',
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="none-button"
+                    disabled={isApplying}
+                    onClick={clearHighlights}
+                    aria-label="Clear highlights from the selected range"
+                  >
+                    None
+                  </button>
+                </div>
+              </>
+            )}
+            <button
+              type="button"
+              className="control-visibility-button"
+              style={{ top: barTop + 38 }}
+              aria-label={showControls ? 'Hide highlight controls' : 'Show highlight controls'}
+              aria-pressed={!showControls}
+              title={showControls ? 'Hide highlight controls' : 'Show highlight controls'}
+              onClick={() => setShowControls((visible) => !visible)}
             >
-              <button
-                type="button"
-                className="apply-color-button"
-                disabled={isApplying}
-                onClick={applyCurrentHighlight}
-                aria-label="Apply highlight to the selected range"
-              >
-                <span
-                  style={{
-                    backgroundColor:
-                      note.palette.find((color) => color.id === note.activePaletteId)?.hex ??
-                      '#FFFF00',
-                  }}
-                />
-              </button>
-              <button
-                type="button"
-                className="none-button"
-                disabled={isApplying}
-                onClick={clearHighlights}
-                aria-label="Clear highlights from the selected range"
-              >
-                None
-              </button>
-            </div>
+              <img
+                src={`/devpost/images/${showControls ? 'eye' : 'eye-off'}.svg`}
+                alt=""
+                aria-hidden="true"
+              />
+            </button>
             <div className="editor-stage">
               <div
                 className="palette-css-vars"
