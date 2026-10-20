@@ -37,3 +37,16 @@ Build the editor mode only: a short editable note, a small set of distinct color
 - **Trash and note restoration/deletion:** outside the editor-focused proof of concept.
 - **Read-only screen and saved-notes library:** not needed to demonstrate the editor interaction; local persistence is enough for this demo.
 - **Hide-pointer-bar/eye control:** the learner decided it does not add enough to the core idea.
+
+## Post-5-build Iteration
+
+This approved, controlled extension preserves the completed proof of concept and its existing scope while making the controls easier to operate during ordinary writing and the demo.
+
+- The selected pin can move left or right one visible text character at a time with the keyboard arrow keys. Holding a key repeats movement. Pin motion only changes targeting; it never applies, extends, or removes a highlight. Movement stops at the first or last character on the current rendered line.
+- If a selected pin has no active character target (including in either red end zone), Left/Right still moves it toward the nearest character on the closest visible text line. Moving inward from a red zone reaches that line's first or last character; the pin remains visually inactive while the bar is outside the normal text-targeting band.
+- The selected horizontal bar can move up or down with the keyboard arrow keys; holding a key repeats movement. Its pins retarget at the new bar height. Existing mouse and trackpad dragging remain available and can be used immediately after keyboard movement.
+- Clicking a pin selects it for horizontal keyboard movement. Clicking the bar outside its pins selects the bar for vertical keyboard movement. Clicking or focusing elsewhere deactivates the selection. Arrow commands are handled only while the corresponding targeting control is selected and focused, so ordinary editor cursor movement and page/editor scrolling remain available.
+- A visibility toggle hides and restores the palette and its add/edit controls, target bar and pins, increment/decrement controls, and apply/None actions. The app name, note title, Help access, and editable note remain visible. Visibility is a temporary screen preference, not note data.
+- Replace the text glyphs on increment/decrement with the supplied Lucide square-chevron icons while preserving their existing actions and hold-to-repeat behavior.
+
+The previous cut of the hide-pointer-bar/eye control remains as planning history; this iteration explicitly supersedes that decision for the demo and ongoing product.

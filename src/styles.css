@@ -426,6 +426,17 @@ input:focus-visible {
   line-height: 1;
 }
 
+.step-button {
+  width: 48px;
+  height: 48px;
+  border-width: 2px;
+}
+
+.step-button img {
+  width: 30px;
+  height: 30px;
+}
+
 .none-button {
   width: 54px;
   min-height: 38px;
@@ -525,6 +536,11 @@ input:focus-visible {
   cursor: grabbing;
 }
 
+.target-bar.is-keyboard-selected {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
 .inactive-zone {
   position: absolute;
   top: -1px;
@@ -583,6 +599,10 @@ input:focus-visible {
   box-shadow: 0 0 0 3px #168cff33;
 }
 
+.target-pin.is-keyboard-selected .pin-knob {
+  box-shadow: 0 0 0 4px #168cff66;
+}
+
 .editor-caption {
   margin: 10px 0 0;
   color: var(--muted);
@@ -639,11 +659,15 @@ input:focus-visible {
     gap: 8px;
   }
 
-  .step-button,
   .apply-color-button,
   .none-button {
     width: 34px;
     height: 34px;
+  }
+
+  .step-button {
+    width: 44px;
+    height: 44px;
   }
 
   .none-button {

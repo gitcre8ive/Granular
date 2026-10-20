@@ -158,3 +158,23 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - The instruction prompt should be replaced by a Help area in the top-right, with quick guidance for the user instead of a temporary message.
 - Local persistence is a single active note state for the prototype, storing the latest version of the note in browser storage and preserving the last edited version after refresh.
 - These are resolved enough to proceed into the technical spec without changing the core proof-of-concept boundary.
+
+## Post-5-build Iteration Requirements
+
+This addition extends the completed editor workflow without changing the existing note, highlight, palette, or persistence requirements.
+
+### Keyboard targeting
+
+- Clicking or focusing a pin selects that pin. Left Arrow and Right Arrow move only that pin by one user-perceived text character on its current visible line; repeated keydown events while held continue moving it. The pin stops at the first or last character on that line rather than jumping to another line.
+- If the selected pin has no current character target, including while in a red end zone, the arrow key can still move it toward the nearest character on the closest visible line. Moving inward from a red zone reaches the first/last character; if the bar is outside the text-targeting vertical band, the pin stays inactive until aligned with text.
+- Clicking or focusing the horizontal bar away from its pins selects the bar. Up Arrow and Down Arrow move the bar vertically within the targeting area and update the pin targets for the new height; holding a key repeats movement.
+- Keyboard pin movement changes only pin positions and target feedback. It does not apply, extend, decrement, or clear highlights. The existing apply, increment, decrement, and None actions retain their behavior.
+- Mouse and trackpad dragging remain usable after keyboard movement and can continue from the current position.
+- Clicking or moving focus to another control, the note title, the editor, or elsewhere deactivates targeting selection. Arrow keys then keep their ordinary browser/editor behavior, including text cursor movement and scrolling.
+- Arrow commands are handled only when the corresponding targeting control has focus. Do not intercept modified arrow shortcuts (Shift, Control, Alt, or Meta); no platform-specific modifier is required. The browser/operating-system key-repeat behavior provides held-key repetition across Windows, macOS, and Linux.
+
+### Control visibility and icons
+
+- A persistent-on-screen visibility toggle switches between the supplied eye and eye-off icons. Hiding removes the palette's color controls, Add pointer bar, targeting bar and pins, decrement/increment controls, apply-color button, and None action from view and interaction.
+- While controls are hidden, the Granular name, note title and field, Help button, visibility toggle, and editable note remain available. Help explains how to restore controls and use keyboard targeting. Visibility is transient UI state and does not alter saved note data.
+- Replace the increment/decrement text glyphs with the supplied square-chevron SVGs. Both buttons keep their current actions and hold behavior, remain clearly visible, and provide a finger-friendly target of at least 44 by 44 CSS pixels.

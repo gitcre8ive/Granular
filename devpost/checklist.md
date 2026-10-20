@@ -49,12 +49,34 @@ Build mode: fast
   Learner check: Try the app from a fresh state: enter and title a note, add and edit colors, target and highlight text, adjust and clear highlights, read Help, then refresh. Tell me what feels confusing or needs changing before final review.
   Commit: `Complete and polish editor experience`
 
+- [ ] **5. You can target text and move the bar with arrow keys**
+  Becomes usable: A clicked or focused pin moves by one character on its current visual line with Left/Right, and the selected bar moves vertically with Up/Down, while ordinary editor arrows and mouse/trackpad dragging continue to work.
+  Why now: The pin-to-character geometry is the riskiest part of this extension, so verify it before adding visibility polish; keyboard movement must reuse precise targets without changing highlights.
+  PRD ref: `prd.md > Post-5-build Iteration Requirements > Keyboard targeting`
+  Spec ref: `spec.md > Post-5-build Iteration Implementation > Keyboard targeting and focus`, `spec.md > Target Bar and Pins`
+  Build: Add focused keyboard selection and same-rendered-line grapheme movement for pins; bounded bar movement that remaps pin targets; preserve pointer dragging; replace increment/decrement glyphs with the supplied square-chevron icons without changing their behavior.
+  Verify (mechanical): Run `npm run build`; start Vite and confirm the page, transformed targeting module, and both supplied square-chevron SVG assets load successfully.
+  Learner check: Select each pin, including in both red end zones with the bar above and inside the editor, and use Left/Right to enter the closest text line and stop at its first/last character without changing highlights; select the bar and use Up/Down; then switch back to trackpad movement and confirm normal arrow movement returns in the editor.
+  Commit: `Add keyboard targeting controls`
+
+- [ ] **6. You can hide and restore the targeting controls**
+  Becomes usable: One accessible eye/eye-off toggle hides and restores the palette, add-color action, bar, pins, range-adjust buttons, apply-color button, and None while leaving the note, title, app name, Help, and toggle usable.
+  Why now: Once targeting remains reliable by keyboard and pointer, visibility can be added without obscuring the core editor or interfering with text entry.
+  PRD ref: `prd.md > Post-5-build Iteration Requirements > Control visibility and icons`
+  Spec ref: `spec.md > Post-5-build Iteration Implementation > Visibility and icon controls`, `spec.md > Components > Help`
+  Build: Add transient visibility state and the rail toggle using the supplied eye SVGs; conditionally hide all specified controls; expand Help with keyboard and visibility guidance; preserve note data and core actions.
+  Verify (mechanical): Run `npm run build`; confirm Vite serves both eye SVG assets and the updated Help module; verify `git diff --check`.
+  Learner check: Hide the controls and confirm the editor, title, app name, and Help remain usable; restore them, use the new icons, complete a highlight and clear it, and confirm the note still works after refresh.
+  Commit: `Add hide controls and keyboard help`
+
 ## Hands-on Checkpoints
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
 - [x] Core highlight loop explored — learner verified applying, incrementing across a wrapped line, decrementing one character, clearing with None without deleting text, and keeping the right pin aligned after inserting text inside a highlight.
 - [x] Palette behavior explored — learner verified add/cancel, color switching, editing existing colors, recoloring existing highlights, and persistence after refresh.
 - [x] Final kick-the-tires exploration and feedback completed — after the final adjustments, the learner retried the viewport and editor scrolling and reported no remaining issues.
+- [ ] Keyboard targeting explored — confirm line-boundary behavior, bar movement, ordinary editor arrows, and switching from keyboard back to pointer movement.
+- [ ] Hide/restore and final demo flow explored — confirm hidden controls and persistent editor/Help remain usable, then retry the updated highlight workflow.
 
 ## Final Review
 
@@ -62,12 +84,14 @@ Build mode: fast
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
 - [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
+- [ ] Post-5-build iteration review complete — keyboard targeting and hide/restore feedback resolved, verified, retried, and learner confirms this iteration is ready.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
+- [ ] `devpost/app-map.html` refreshed for the keyboard-targeting and visibility iteration, checked, and shown.
 
 Activity and evidence: Prior-practice recap of pointer-to-character geometry; the learner confirmed the final viewport behavior and editor scrolling, and reported no remaining issues.
 Route and stops: Reference route prepared, not toured interactively — `src/components/TargetBar.tsx > targetPin`, `src/lib/targeting.ts > targetAtPoint` and `targetPercentForCharacter`, `src/lib/highlighting.ts > getTargetRange`.
@@ -76,6 +100,7 @@ Reflection: Already covered; personal response is recorded only in the ignored l
 Activity mode: Prior practice/recap.
 
 ## Revisions
+- Let inactive pins move inward with Left/Right — hands-on testing found that keyboard movement required an active target, trapping selected pins in the red zones and when the bar was outside the text-targeting band.
 - Map active highlight ranges and endpoint pins through text edits — learner testing showed inserted text inherited the highlight but the endpoint pin stayed at its old document position.
 - Defer palette/layout alignment feedback to slice 4 — the learner confirmed palette behavior and requested that visual cleanup wait until core functionality is complete.
 - Added hands-on pauses after slices 1, 2, and 3 — the learner chose Fast mode to save time and credits while still testing the app as it is built; each pause focuses on a distinct behavior and gives feedback time to shape the remaining work.

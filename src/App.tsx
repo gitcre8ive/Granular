@@ -450,14 +450,22 @@ function App() {
                   label="Decrement highlighted text"
                   onRepeat={decrementHighlight}
                 >
-                  ‹
+                  <img
+                    src="/devpost/images/square-chevron-left.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
                 </HoldRepeatButton>
                 <HoldRepeatButton
                   disabled={isApplying}
                   label="Increment highlighted text"
                   onRepeat={incrementHighlight}
                 >
-                  ›
+                  <img
+                    src="/devpost/images/square-chevron-right.svg"
+                    alt=""
+                    aria-hidden="true"
+                  />
                 </HoldRepeatButton>
               </div>
               <TargetBar

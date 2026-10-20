@@ -208,3 +208,22 @@ Granular/
 - **Build-time character check:** confirm the mapping handles user-perceived characters, including composed or multi-code-unit characters, as one target, and test edge characters where the browser's point lookup may not return a position. If the browser/editor position model needs a conversion helper, verify it with a short test before calling precise targeting complete.
 - **Approved implementation details:** precise pointer-coordinate hit testing, ordered highlight reveal, and the HSV conversion helper are build tasks within the agreed architecture; the first build step should validate coordinate mapping before surrounding polish.
 - **Still to verify in the first build step:** current Node/npm versions and the exact compatible package versions. Start the project and exercise the Tiptap coordinate mapping before implementing the full interaction layer.
+
+## Post-5-build Iteration Implementation
+
+### Keyboard targeting and focus
+
+- Keep the selected targeting control transient in `TargetBar`: `bar`, pin index 0 or 1, or no selection. Pointer-down selects and focuses the clicked bar or pin. A document-level pointer/focus listener clears selection when focus or pointer interaction moves outside the targeting controls; Tab focus on a targeting control may select it for keyboard users.
+- Handle arrow keys only while the selected bar or pin itself is focused. Prevent the browser default only for the handled unmodified arrow key. Ignore Shift, Control, Alt, and Meta combinations so browser and OS shortcuts are not consumed. Do not handle arrow keys while the Tiptap editor, title field, Help dialog, color dialog, or other controls have focus.
+- Left/Right move only the selected pin. Use grapheme ranges and rendered character rectangles to find the adjacent character on the same visual line; do not jump across a wrapped line or paragraph. At either line boundary, leave the pin on that boundary character. Update the pin percentage from the character rectangle and retain the existing blue target decoration. Arrow movement does not dispatch a highlight-mark transaction.
+- When the selected pin has no target (including in a red end zone), resolve the closest rendered text line to the pin-tip height and choose the next character center in the requested horizontal direction. From the left red zone, Right reaches the first character; from the right red zone, Left reaches the last. Keep the target null while the bar tip is outside the existing vertical targeting tolerance; only its horizontal pin position changes until it is aligned with text.
+- Up/Down move the selected bar by a small, bounded vertical pixel step within the existing targeting region, allowing native repeated keydown events while held. Reuse the pointer-drag pin remapping behavior after each vertical move. Do not change the established bar limits or the targeting coordinate tolerance.
+- Keep pointer capture and drag handling unchanged except for selecting/focusing the control on pointer-down, so a user can switch from keyboard movement to mouse/trackpad movement without restarting the interaction.
+
+### Visibility and icon controls
+
+- Add a transient `showControls` UI state in the app shell. When false, do not render the color sidebar and its Add/edit controls, targeting bar and pins, range-adjust buttons, or bar actions. Keep Help, the note title, editor, app name, and an accessible visibility toggle rendered.
+- Place the toggle in the reserved right-side control rail below and centered under the apply/None row; keep it reachable when controls are hidden. Use the supplied local `devpost/images/eye.svg` and `eye-off.svg` assets, descriptive accessible names, and no external icon dependency.
+- Use the supplied local `square-chevron-left.svg` and `square-chevron-right.svg` assets inside the existing decrement/increment buttons. Preserve action callbacks, hold-to-repeat behavior, accessible labels, and a minimum 44px square target.
+- Extend Help with concise pin/bar arrow-key instructions, same-line movement limits, ordinary editor arrow-key behavior, and hide/restore guidance.
+- The toggle does not modify or persist note data. The SVG files remain local project assets.
