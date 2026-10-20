@@ -47,7 +47,7 @@
       <header>
         <p class="eyebrow">Granular · local-first proof of concept</p>
         <h1>How pointer pins find characters</h1>
-        <p class="intro">Granular is a note editor for precise, multicolor text highlighting. A pin's screen position is translated into a real text character; selected pins and the bar can also move by keyboard. The palette and note are saved in this browser. Controls can be hidden while the title, Help, and editable note remain available. There is no account or remote service.</p>
+        <p class="intro">Granular is a note editor for precise, multicolor text highlighting. A pin's screen position is translated into a real text character; keyboard shortcuts select pins or the bar, and arrow keys move them. Enter applies the active color to a targeted range when the editor is not focused. The palette and note are saved in this browser. Controls can be hidden while the title, Help, and editable note remain available. There is no account or remote service.</p>
       </header>
 
       <section class="panel" aria-labelledby="flow-heading">
@@ -87,7 +87,7 @@
         <ol class="route">
           <li>
             <h3>Pointer input — <a href="../src/components/TargetBar.tsx"><code>src/components/TargetBar.tsx</code></a></h3>
-            <code>targetPin</code> combines the dragged pin's horizontal position with the bar's text-line height. Left/Right on a focused pin moves by character; Up/Down on the focused bar moves it vertically. Clicking or focusing elsewhere releases keyboard targeting.
+            <code>targetPin</code> combines the dragged pin's horizontal position with the bar's text-line height. Left/Right on a focused pin moves by character; Up/Down on the focused bar moves it vertically. <code>handleSelectorShortcut</code> in the same component maps Ctrl+Shift+[ and Ctrl+Shift+] to the pins and Ctrl+Shift+Backslash to the bar. The backslash shortcut matches physical <code>Backslash</code> and <code>IntlBackslash</code> codes and shifted <code>|</code>; the bar is the track root, so lookup checks the root itself as well as its descendants. Clicking or focusing elsewhere releases keyboard targeting.
           </li>
           <li>
             <h3>Coordinate geometry — <a href="../src/lib/targeting.ts"><code>src/lib/targeting.ts</code></a></h3>
@@ -95,7 +95,7 @@
           </li>
           <li>
             <h3>Range and feedback — <a href="../src/lib/highlighting.ts"><code>src/lib/highlighting.ts</code></a></h3>
-            <code>getTargetRange</code> turns active pin targets into a text range. The target decorations in <code>targeting.ts</code> provide the visible blue outline.
+            <code>getTargetRange</code> turns active pin targets into a text range. The target decorations in <code>targeting.ts</code> provide the visible blue outline. In <a href="../src/App.tsx"><code>App.tsx</code></a>, <code>handleApplyShortcut</code> delegates Enter to the same active-color action as the apply button when a valid range exists and focus is on the page or a targeting control; editor focus keeps normal Enter/newline behavior.
           </li>
         </ol>
       </section>
@@ -120,7 +120,7 @@
       <section aria-labelledby="run-heading">
         <h2 id="run-heading">Run the app again</h2>
         <p>From the repository root, run <code>npm install</code> if dependencies are not installed, then <code>npm run dev</code> and open the local URL printed by Vite (normally <code>http://localhost:5173</code>).</p>
-        <p class="meta">Source snapshot: commit <code>fb0e5ae</code>. This standalone map works offline and may drift if the source changes later.</p>
+        <p class="meta">Source snapshot: the post-5-build keyboard-controls iteration. This standalone map works offline and may drift if the source changes later.</p>
       </section>
     </main>
   </body>

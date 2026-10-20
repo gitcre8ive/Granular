@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { Editor, JSONContent } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'
 import { ColorDialog } from './components/ColorDialog'
@@ -262,6 +262,41 @@ function App() {
       isApplyingRef.current = false
     }
   }
+
+  useEffect(() => {
+    if (!showControls || !targetRange) return
+
+    function handleApplyShortcut(event: KeyboardEvent) {
+      if (
+        event.key !== 'Enter' ||
+        event.repeat ||
+        event.isComposing ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        isApplyingRef.current
+      ) {
+        return
+      }
+
+      const activeElement = document.activeElement
+      const focusedTarget =
+        activeElement instanceof Element
+          ? activeElement.closest<HTMLElement>('[data-keyboard-target]')
+          : null
+      const focusIsOnTarget =
+        focusedTarget !== null && targetTrackRef.current?.contains(focusedTarget)
+      if (activeElement !== document.body && !focusIsOnTarget) return
+
+      event.preventDefault()
+      void applyCurrentHighlight()
+    }
+
+    document.addEventListener('keydown', handleApplyShortcut, true)
+    return () =>
+      document.removeEventListener('keydown', handleApplyShortcut, true)
+  }, [applyCurrentHighlight, showControls, targetRange])
 
   function incrementHighlight() {
     const range = appliedRangeRef.current ?? targetRange

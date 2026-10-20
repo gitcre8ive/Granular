@@ -206,6 +206,59 @@ export function TargetBar({
     trackRef,
   ])
 
+  useEffect(() => {
+    if (disabled) return
+
+    function handleSelectorShortcut(event: KeyboardEvent) {
+      if (
+        !event.ctrlKey ||
+        !event.shiftKey ||
+        event.altKey ||
+        event.metaKey
+      ) {
+        return
+      }
+
+      const activeElement = document.activeElement
+      if (
+        activeElement instanceof HTMLElement &&
+        (activeElement.isContentEditable ||
+          activeElement.matches('input, textarea, select, [role="textbox"]') ||
+          activeElement.closest('[role="dialog"]'))
+      ) {
+        return
+      }
+
+      const target =
+        event.code === 'BracketLeft'
+          ? 'pin-0'
+          : event.code === 'BracketRight'
+            ? 'pin-1'
+            : event.code === 'Backslash' ||
+                event.code === 'IntlBackslash' ||
+                event.key === '\\' ||
+                event.key === '|'
+              ? 'bar'
+              : null
+      if (!target) return
+
+      const selector = `[data-keyboard-target="${target}"]`
+      const track = trackRef.current
+      const control = track?.matches(selector)
+        ? track
+        : track?.querySelector<HTMLElement>(selector)
+      if (!control) return
+
+      event.preventDefault()
+      control.focus({ preventScroll: true })
+      setSelectedControl(target === 'bar' ? 'bar' : target === 'pin-0' ? 0 : 1)
+    }
+
+    document.addEventListener('keydown', handleSelectorShortcut, true)
+    return () =>
+      document.removeEventListener('keydown', handleSelectorShortcut, true)
+  }, [disabled, trackRef])
+
   function isInactive(percent: number) {
     return percent <= inactiveEdges[0] || percent >= 100 - inactiveEdges[1]
   }

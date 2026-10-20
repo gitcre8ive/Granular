@@ -173,6 +173,18 @@ This addition extends the completed editor workflow without changing the existin
 - Clicking or moving focus to another control, the note title, the editor, or elsewhere deactivates targeting selection. Arrow keys then keep their ordinary browser/editor behavior, including text cursor movement and scrolling.
 - Arrow commands are handled only when the corresponding targeting control has focus. Do not intercept modified arrow shortcuts (Shift, Control, Alt, or Meta); no platform-specific modifier is required. The browser/operating-system key-repeat behavior provides held-key repetition across Windows, macOS, and Linux.
 
+### Target-selection shortcuts
+
+- When highlight controls are visible and focus is outside the note title, note editor, other editable fields, and dialogs, Ctrl+Shift+[ selects the left pin, Ctrl+Shift+] selects the right pin, and Ctrl+Shift+Backslash selects the bar (the shifted key may be reported as `|` by some layouts). The user then moves the selected pin with unmodified Left/Right or the bar with unmodified Up/Down.
+- Identify the bracket shortcuts by physical `BracketLeft` and `BracketRight` key codes so they do not depend on whether the shifted character is printed as `[` or `{`; document that physical bracket locations vary on non-US layouts.
+- On Windows and Linux use Ctrl+Shift; on macOS use Control+Shift, not Command+Shift. Do not intercept these shortcuts while an editable element has focus or while the controls are hidden. Prevent default only after a recognized shortcut is received by the page.
+- Browser/OS shortcuts can take precedence before a web page receives a key event; the app does not guarantee interception in every browser configuration. Keep click/Tab selection as the reliable fallback.
+
+### Keyboard highlight application
+
+- With a valid one-character or two-pin target and controls visible, pressing Enter while focus is on the page, target bar, or a pin applies the active color to the targeted range, matching the color-apply button.
+- Do not intercept Enter while the title, editor, another editable field, or a dialog has focus. Require a target and do not repeatedly start the highlight animation from a held Enter key.
+
 ### Control visibility and icons
 
 - A persistent-on-screen visibility toggle switches between the supplied eye and eye-off icons. Hiding removes the palette's color controls, Add pointer bar, targeting bar and pins, decrement/increment controls, apply-color button, and None action from view and interaction.

@@ -69,6 +69,16 @@ Build mode: fast
   Learner check: Hide the controls and confirm the editor, title, app name, and Help remain usable; restore them, use the new icons, complete a highlight and clear it, and confirm the note still works after refresh.
   Commit: `Add hide controls and keyboard help`
 
+- [x] **7. You can select targeting controls with shortcut keys**
+  Becomes usable: With controls visible and focus outside editable fields, Ctrl+Shift+[ selects the left pin, Ctrl+Shift+] selects the right pin, and Ctrl+Shift+Backslash selects the bar. Enter applies the active color to a valid pin-targeted range when focus is on the page, bar, or a pin. The existing unmodified arrow keys then move the selected control.
+  Why now: These shortcuts build on the tested focus-aware arrow movement, adding faster selector access while keeping ordinary editor typing and browser shortcuts protected where the page can detect them.
+  PRD ref: `prd.md > Post-5-build Iteration Requirements > Target-selection shortcuts`
+  Spec ref: `spec.md > Post-5-build Iteration Implementation > Keyboard targeting and focus`
+  Build: Add platform-aware Control+Shift selector shortcuts using physical bracket/backslash key codes; ignore editable/dialog focus and hidden-control state; focus the chosen pin/bar; add Enter-to-apply for a valid target only when focus is on the page or targeting controls; retain click/Tab selection and existing arrow behavior; update Help with shortcuts and limitations.
+  Verify (mechanical): Run `npm run build`; confirm the app and updated Help module are served; verify `git diff --check`. Inspect keydown handling to confirm editable/dialog focus, hidden controls, unrelated modifiers, and unrecognized shortcuts are not intercepted.
+  Learner check: With controls visible, use each shortcut outside editable fields/dialogs and verify the correct pin or bar is selected, then move it with unmodified arrow keys. Use Ctrl+Shift+Backslash from a selected pin and confirm it selects the bar. Target a one-character range and a two-pin range, then press Enter with the page or target control focused to apply the active color; confirm Enter still types a newline in the editor and does not apply from the title, other controls, or a dialog. Confirm Ctrl+Shift+Left/Right inside the editor still selects text and that shortcuts are unavailable while controls are hidden; check the documented Control+Shift form on macOS if available.
+  Commit: `Add targeting selection shortcuts`
+
 ## Hands-on Checkpoints
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
@@ -77,6 +87,7 @@ Build mode: fast
 - [x] Final kick-the-tires exploration and feedback completed — after the final adjustments, the learner retried the viewport and editor scrolling and reported no remaining issues.
 - [x] Keyboard targeting explored — learner confirmed Left/Right pin targeting and Up/Down bar movement, preserved editor arrows and pointer dragging, and after a fix confirmed pins move inward from both red zones with the bar above or inside the editor.
 - [x] Hide/restore and final demo flow explored — learner confirmed the requested controls hide and restore, Help remains available and explains the new keyboard behavior, and the Lucide buttons retain their actions.
+- [x] Selector shortcuts explored — learner verified left-pin, right-pin, and bar selection, direct switching and arrow movement, Enter-to-apply for one and two characters, normal editor newline behavior, and shortcut disablement while controls are hidden.
 
 ## Final Review
 
@@ -85,22 +96,29 @@ Build mode: fast
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
 - [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
+- [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for the keyboard-targeting and visibility iteration, checked, and shown.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, and visibility; checked for offline links and shared with the learner.
 
-Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, and icon actions. `npm run build`, Vite asset/module smoke checks, and offline app-map link checks passed.
-Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and keyboard handling; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > showControls`; `src/components/HelpPanel.tsx`.
+Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, and ordinary editor newline behavior. `npm run build`, Vite module smoke checks, and offline app-map link checks passed.
+Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and `handleSelectorShortcut`; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > handleApplyShortcut` and `showControls`; `src/components/HelpPanel.tsx`.
 Edit outcome: No optional learning-tour edit; the learner requested the product enhancements and confirmed the resulting interactions work.
 Reflection: Already covered; personal response is recorded only in the ignored learner profile.
 Activity mode: Prior practice/recap.
 
 ## Revisions
 - Let inactive pins move inward with Left/Right — hands-on testing found that keyboard movement required an active target, trapping selected pins in the red zones and when the bar was outside the text-targeting band.
+- Accept Space key code and key-value variants for Ctrl+Shift+Space — hands-on testing confirmed the bracket selectors but found the bar selector did not activate on the learner's keyboard/browser.
+- Replace Ctrl+Shift+Page Up/Page Down bar selectors with Ctrl+Shift+Backslash — learner testing confirmed Page Up/Page Down did not select the bar; browsers commonly reserve those combinations for tab management before a page can handle them.
+- Resolve selector targets at the track root — Chrome delivered the backslash shortcut as `key: '|'` and `code: 'IntlBackslash'`, but the bar-selection lookup searched only descendants even though the bar is the track element itself.
+- Bar selector retest passed — learner confirmed Ctrl+Shift+Backslash now selects the bar after the lookup fix.
+- Add Enter-to-apply for valid pin-targeted ranges when focus is on the page, bar, or pin — requested as a quicker alternative to clicking the color button while preserving normal Enter behavior in the editor and other interactive fields.
+- Enter-to-apply tested — learner confirmed one-character and two-pin highlights use the active color, and Enter still inserts a newline when the editor has focus.
 - Map active highlight ranges and endpoint pins through text edits — learner testing showed inserted text inherited the highlight but the endpoint pin stayed at its old document position.
 - Defer palette/layout alignment feedback to slice 4 — the learner confirmed palette behavior and requested that visual cleanup wait until core functionality is complete.
 - Added hands-on pauses after slices 1, 2, and 3 — the learner chose Fast mode to save time and credits while still testing the app as it is built; each pause focuses on a distinct behavior and gives feedback time to shape the remaining work.
