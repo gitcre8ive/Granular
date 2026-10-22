@@ -23,7 +23,7 @@ Granular is a local note editor designed for precise, low-friction text highligh
 
 Granular is intentionally a single-screen editor for this proof of concept.
 
-- Header: app name at the left, centered note-title field with placeholder “Untitled …”, storage status, and Help at the right. On narrow screens, the header may wrap while keeping the title centered and controls usable.
+- Header: the Granular home link at the left, centered note-title field with placeholder “Untitled …”, storage status, and Help at the right. Keep the link hit area to the word and a small margin so nearby header clicks do not refresh the page. On narrow screens, the header may wrap while keeping the title centered and controls usable.
 - Center: a large text editor box sized to allow comfortable reading and editing of a short note. It should use more of the available viewport height while keeping the guidance caption beneath it visibly above the bottom edge.
 - Above the editor box at rest: a horizontal target bar spanning most of the editor width, with two control pins descending from it. The user can drag the bar down into the box and align the pin tips just above a text line.
 - Keep the editor box and targeting controls close beneath the header title field; moving the title into the header raises the editor and control group together without changing their relative spacing.
@@ -174,6 +174,7 @@ This addition extends the completed editor workflow without changing the existin
 - Clicking or moving focus to another control, the note title, the editor, or elsewhere deactivates targeting selection. Arrow keys then keep their ordinary browser/editor behavior, including text cursor movement and scrolling.
 - Arrow commands are handled only when the corresponding targeting control has focus. Do not intercept modified arrow shortcuts (Shift, Control, Alt, or Meta); no platform-specific modifier is required. The browser/operating-system key-repeat behavior provides held-key repetition across Windows, macOS, and Linux.
 - When the bar reaches the lower two visible text lines and more editor content can scroll into view, automatically scroll the editor forward and return the bar near its upper targeting position. Keep the targeted text line below the pin tip so it is not obscured, and keep the bar focused and selected during this transition. When the user holds Page Up while the bar is selected, focus the editor scroller while retaining the bar's active selection; each repeated keypress moves the bar upward and scrolls earlier text into view together. Keep the bar selected in the scroller-focused state; releasing Page Up stops the motion and returns focus to the bar for continued arrow-key movement. Never reverse automatically at the end of the note. Apply forward auto-scroll during both keyboard bar movement and pointer dragging; stop advancing when the editor has reached its end.
+- Keep repeated targeting movement responsive on longer notes by avoiding unnecessary work outside the nearby character range. The learner confirmed sustained movement and long-note scrolling remain smooth.
 
 ### Target-selection shortcuts
 

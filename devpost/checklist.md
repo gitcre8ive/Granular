@@ -94,23 +94,23 @@ Build mode: fast
 - [x] Place decrement/increment centered above the moving bar and align the color and None actions in a row to its right.
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
-- [ ] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
+- [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 - [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
 - [x] Extend the editor box downward to use more viewport space while preserving room below the guidance caption and avoiding page-level scrolling; learner confirmed the final height is right.
 - [x] Auto-scroll the editor and return the bar near the top when moving through lower visible lines; keep the target line below the pin tip and the bar active, and make held Page Up focus the editor scroller while scrolling backward with the bar, then return focus to the bar on release; learner confirmed smooth scrolling down and back up with Fn+PgUp.
-- [ ] Highlight inline-code-formatted text without removing its code styling; verify Apply, increment/decrement, None, and saved-note reload.
-- [ ] Reduce the Granular home link's clickable area to the word with a small margin; verify clicking nearby header space no longer refreshes the page and the layout is unchanged.
+- [x] Highlight inline-code-formatted text without removing its code styling; learner confirmed it works, and schema-level Apply/clear verification showed the code mark remains.
+- [x] Reduce the Granular home link's clickable area to the word with a small margin; learner confirmed the margin feels right and the rest of the app continues working well.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, and the raised title/editor layout; checked for offline links and shared with the learner.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, and the text-sized app-name link; checked for offline links.
 
-Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, and the final editor height with caption breathing room. `npm run build`, Vite module smoke checks, and offline app-map link checks passed.
+Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, final editor height, smooth long-note scrolling in both directions, inline-code highlighting, and the text-sized home-link target. `npm run build`, Vite module smoke checks, schema-level code-mark checks, and offline app-map link checks passed.
 Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and `handleSelectorShortcut`; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > handleApplyShortcut` and `showControls`; `src/components/HelpPanel.tsx`.
 Edit outcome: No optional learning-tour edit; the learner requested the product enhancements and confirmed the resulting interactions work.
 Reflection: Already covered; personal response is recorded only in the ignored learner profile.
@@ -138,4 +138,5 @@ Activity mode: Prior practice/recap.
 - Keep the targeting bar and editor content moving together through overflow — learner reported the bar stops at the fixed editor viewport bottom and requested automatic editor scrolling with the bar repositioned near the top to continue reading/highlighting without separately operating the scrollbar.
 - Refine overflow scrolling after learner testing — the bar obscured the target line after a scroll, and moving focus to the editor disabled the bar. Keep the target line below the pin tip, leave the bar selected during forward auto-scroll, and retain that selection when Page Up focuses the editor scroller; couple the bar's upward movement with backward scrolling, then return focus to the selected bar on key release. Reversal remains user-triggered, never automatic at note end.
 - Allow highlights on inline code — Tiptap's default Code mark excludes every other mark; use a custom exclusion list so Granular highlights can coexist while inline code styling remains intact.
-- Constrain the Granular home link to its text-sized hit area after the learner reported that the stretched grid link could trigger an accidental page refresh; production build passed, and the browser retest is pending.
+- Improve sustained targeting responsiveness by caching grapheme segmentation per text node, limiting character lookup to a nearby range, and skipping redundant pin updates; learner testing confirmed sustained movement remains smooth.
+- Constrain the Granular home link to its text-sized hit area after the learner reported that the stretched grid link could trigger an accidental page refresh; production build passed and the learner confirmed the resulting small margin feels right.

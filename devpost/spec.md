@@ -51,6 +51,7 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 
 - Use the supplied concepts as visual references: [screen 1](./images/granular_poc_screen1.svg) and [screen 2](./images/granular_poc_screen2.svg). They are references, not app runtime dependencies.
 - Keep the UI spacious and editor-first, with the app name at upper left, a horizontally centered title field aligned in the same header row, storage status and Help at the right, the palette at the left, and the horizontal targeting bar resting above the editor box. Place the editor and all targeting controls close below the title field, preserving their existing relative spacing when the title is moved into the header. On narrow screens, reflow the header while keeping the title centered and controls usable.
+- Keep the Granular home link's hit area limited to the word with a small margin; do not let its grid cell become a page-wide or column-wide click target.
 - Fit the desktop layout within the reference 1440×667 viewport without page-level scrolling; let the editor box use the available viewport height while keeping its guidance caption below it with visible breathing room from the bottom edge. Longer note content scrolls inside the editor.
 - List Ambatah first for the app name, followed by system sans-serif fallbacks. No font file is currently in the project; do not fetch a font from an external source.
 - Keep the default yellow, the chosen color swatches, and the inactive red pin-end zones visually distinct. Show blue borders around the currently targeted characters before applying a highlight.
@@ -65,6 +66,7 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 Owns the single-screen layout, app name, Help entry, and top-level dialogs. It composes the editor, palette, and action controls without introducing notes-library or settings screens.
 
 Implements `prd.md > Screens and Layout`, `prd.md > Look and Feel`, and `prd.md > Prompt and invalid-state guidance`.
+The home link is sized to its text rather than stretched across its header grid column, with only a small surrounding margin.
 
 ### Note Title
 
@@ -85,6 +87,8 @@ Renders the horizontal bar above the editor box at rest, narrow red inactive str
 Implements `prd.md > Highlight range selection`.
 
 The targeting contract uses Tiptap document positions for the start of each targeted visible character. The derived text range is half-open: it starts at the first targeted character and ends immediately after the final targeted character, so both pin targets are included. With one active pin, both range endpoints resolve to that single character. The red inactive zones are narrow strips at the extreme ends of the bar; the remaining active span extends beyond the text's inset so first and last characters can still be targeted. Character mapping compares ProseMirror caret-coordinate rectangles for each grapheme against the pin coordinates, with the editor's coordinate lookup as a tie-breaker. A target is valid only when the pin tip is within a narrow band just above or slightly into the line's caret box and horizontally overlaps a character (allowing a small tolerance for narrow glyphs); the mapper must not snap to a distant character at the end of a shorter line. Converting pointer coordinates into character positions must account for spaces, punctuation, line wrapping, and paragraph boundaries; verify this mapping before adding UI polish.
+
+For responsive movement through longer notes, reuse grapheme offsets cached per ProseMirror text node, limit nearby-position target lookup to a small radius around the current position, and skip pin-state updates when the computed target is unchanged. Keep coordinate measurement local to the characters needed for the current interaction.
 
 ### Highlight Actions
 
@@ -233,3 +237,10 @@ Granular/
 - Use the supplied local `square-chevron-left.svg` and `square-chevron-right.svg` assets inside the existing decrement/increment buttons. Preserve action callbacks, hold-to-repeat behavior, accessible labels, and a minimum 44px square target.
 - Extend Help with concise pin/bar arrow-key instructions, same-line movement limits, ordinary editor arrow-key behavior, and hide/restore guidance.
 - The toggle does not modify or persist note data. The SVG files remain local project assets.
+
+### Targeting responsiveness and header hit area
+
+- Cache grapheme segmentation per ProseMirror text node and inspect a bounded neighborhood around the current target for adjacent-character movement instead of rescanning the entire note.
+- Avoid replacing pin state when the computed percentage and target position/length have not changed.
+- Size the app-name home link to its text with a small margin so the surrounding header area is not accidentally clickable.
+- The learner confirmed sustained targeting, long-note scrolling in both directions, and the narrowed home-link click area in hands-on testing.

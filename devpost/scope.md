@@ -50,5 +50,6 @@ This approved, controlled extension preserves the completed proof of concept and
 - With a valid one-character or two-pin target, pressing Enter while focus is on the page, bar, or a pin applies the active highlight color. Enter does not apply while the title, editor, another field, or a dialog has focus, preserving ordinary text entry.
 - A visibility toggle hides and restores the palette and its add/edit controls, target bar and pins, increment/decrement controls, and apply/None actions. The app name, note title, Help access, and editable note remain visible. Visibility is a temporary screen preference, not note data.
 - Replace the text glyphs on increment/decrement with the supplied Lucide square-chevron icons while preserving their existing actions and hold-to-repeat behavior.
+- Keep sustained targeting responsive as notes grow, and restrict the Granular home link to its text with a small click margin to reduce accidental refreshes. These are interaction refinements to the existing editor, not additions to the product boundary.
 
 The previous cut of the hide-pointer-bar/eye control remains as planning history; this iteration explicitly supersedes that decision for the demo and ongoing product.
