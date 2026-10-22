@@ -58,6 +58,10 @@ input:focus-visible {
 .brand {
   grid-column: 1;
   grid-row: 1;
+  justify-self: start;
+  width: fit-content;
+  padding: 2px;
+  margin: -2px;
   color: var(--ink);
   font-family: Ambatah, "Trebuchet MS", system-ui, sans-serif;
   font-size: 2.25rem;

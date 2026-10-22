@@ -94,13 +94,14 @@ Build mode: fast
 - [x] Place decrement/increment centered above the moving bar and align the color and None actions in a row to its right.
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
-- [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
+- [ ] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 - [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
 - [x] Extend the editor box downward to use more viewport space while preserving room below the guidance caption and avoiding page-level scrolling; learner confirmed the final height is right.
-- [ ] Auto-scroll the editor and return the bar near the top when moving through lower visible lines; keep the target line below the pin tip and the bar active, and make held Page Up focus the editor scroller while scrolling backward with the bar, then return focus to the bar on release; verify with overflowing text and learner hands-on test.
+- [x] Auto-scroll the editor and return the bar near the top when moving through lower visible lines; keep the target line below the pin tip and the bar active, and make held Page Up focus the editor scroller while scrolling backward with the bar, then return focus to the bar on release; learner confirmed smooth scrolling down and back up with Fn+PgUp.
 - [ ] Highlight inline-code-formatted text without removing its code styling; verify Apply, increment/decrement, None, and saved-note reload.
+- [ ] Reduce the Granular home link's clickable area to the word with a small margin; verify clicking nearby header space no longer refreshes the page and the layout is unchanged.
 
 ## Code Tour and App Map
 
@@ -137,3 +138,4 @@ Activity mode: Prior practice/recap.
 - Keep the targeting bar and editor content moving together through overflow — learner reported the bar stops at the fixed editor viewport bottom and requested automatic editor scrolling with the bar repositioned near the top to continue reading/highlighting without separately operating the scrollbar.
 - Refine overflow scrolling after learner testing — the bar obscured the target line after a scroll, and moving focus to the editor disabled the bar. Keep the target line below the pin tip, leave the bar selected during forward auto-scroll, and retain that selection when Page Up focuses the editor scroller; couple the bar's upward movement with backward scrolling, then return focus to the selected bar on key release. Reversal remains user-triggered, never automatic at note end.
 - Allow highlights on inline code — Tiptap's default Code mark excludes every other mark; use a custom exclusion list so Granular highlights can coexist while inline code styling remains intact.
+- Constrain the Granular home link to its text-sized hit area after the learner reported that the stretched grid link could trigger an accidental page refresh; production build passed, and the browser retest is pending.
