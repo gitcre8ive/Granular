@@ -23,10 +23,10 @@ Granular is a local note editor designed for precise, low-friction text highligh
 
 Granular is intentionally a single-screen editor for this proof of concept.
 
-- Top-left: app name, styled in Ambatah.
-- Top area: note title field with placeholder “Untitled …”.
-- Center: a large text editor box sized to allow comfortable reading and editing of a short note.
+- Header: app name at the left, centered note-title field with placeholder “Untitled …”, storage status, and Help at the right. On narrow screens, the header may wrap while keeping the title centered and controls usable.
+- Center: a large text editor box sized to allow comfortable reading and editing of a short note. It should use more of the available viewport height while keeping the guidance caption beneath it visibly above the bottom edge.
 - Above the editor box at rest: a horizontal target bar spanning most of the editor width, with two control pins descending from it. The user can drag the bar down into the box and align the pin tips just above a text line.
+- Keep the editor box and targeting controls close beneath the header title field; moving the title into the header raises the editor and control group together without changing their relative spacing.
 - Left sidebar: a stack of color-filled pointer bars, arranged in rows of four, representing the active and available highlight colors.
 - Right side of the target bar: a color-apply button for the currently selected pointer bar, plus the “Add pointer bar” control for creating more colors.
 - A small prompt or instructional message appears if no valid range is active, guiding the user to drag the bar and aim the pins before applying a highlight.

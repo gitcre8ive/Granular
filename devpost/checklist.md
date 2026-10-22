@@ -97,15 +97,17 @@ Build mode: fast
 - [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
+- [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
+- [x] Extend the editor box downward to use more viewport space while preserving room below the guidance caption and avoiding page-level scrolling; learner confirmed the final height is right.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, and visibility; checked for offline links and shared with the learner.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, and the raised title/editor layout; checked for offline links and shared with the learner.
 
-Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, and ordinary editor newline behavior. `npm run build`, Vite module smoke checks, and offline app-map link checks passed.
+Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, and the final editor height with caption breathing room. `npm run build`, Vite module smoke checks, and offline app-map link checks passed.
 Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and `handleSelectorShortcut`; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > handleApplyShortcut` and `showControls`; `src/components/HelpPanel.tsx`.
 Edit outcome: No optional learning-tour edit; the learner requested the product enhancements and confirmed the resulting interactions work.
 Reflection: Already covered; personal response is recorded only in the ignored learner profile.
@@ -129,3 +131,4 @@ Activity mode: Prior practice/recap.
 - Changed character picking to compare the pin against actual browser text-range rectangles for each grapheme — the learner confirmed the narrow zones and no-horizontal-scroll behavior, but edge characters still did not activate, indicating coordinate-to-character mapping remained the issue.
 - Returned to ProseMirror caret-coordinate rectangles after the DOM text-range change stopped all character tracking; moved the bar into a dedicated space above the editor box, shortened the pin needle to a clear target tip, and limited character feedback to pin tips just above a text line — learner feedback showed the bar should begin outside the box and should not outline text when vertically misaligned.
 - Restricted horizontal targeting to characters actually under or very near each pin — hands-on testing confirmed first-line targets, but a pin beyond the end of a shorter second line incorrectly selected that line's last character.
+- Move the centered note title into the header and raise the editor/control group with it; extend the editor downward by 100px total from the prior layout while retaining caption spacing — learner testing approved the title/group alignment and confirmed the final editor height is comfortable without page scrolling.

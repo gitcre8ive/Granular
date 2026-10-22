@@ -408,22 +408,37 @@ function App() {
     <main className="app-shell">
       <header className="app-header">
         <a className="brand" href="/" aria-label="Granular home">Granular</a>
-        <div
-          className={`header-status${storageWarning ? ' is-warning' : ''}`}
-          role="status"
-          aria-live="polite"
-        >
-          {storageMessage ?? 'Your note is stored in this browser'}
+        <div className="title-control">
+          <label className="visually-hidden" htmlFor="note-title">Note title</label>
+          <input
+            id="note-title"
+            className="note-title"
+            type="text"
+            value={note.title}
+            onChange={(event) => updateTitle(event.target.value)}
+            onBlur={saveTitleOnBlur}
+            placeholder="Untitled ..."
+            aria-label="Note title"
+          />
         </div>
-        <button
-          className="help-button"
-          type="button"
-          aria-expanded={showHelp}
-          aria-controls="granular-help-panel"
-          onClick={() => setShowHelp(true)}
-        >
-          Help
-        </button>
+        <div className="header-actions">
+          <div
+            className={`header-status${storageWarning ? ' is-warning' : ''}`}
+            role="status"
+            aria-live="polite"
+          >
+            {storageMessage ?? 'Your note is stored in this browser'}
+          </div>
+          <button
+            className="help-button"
+            type="button"
+            aria-expanded={showHelp}
+            aria-controls="granular-help-panel"
+            onClick={() => setShowHelp(true)}
+          >
+            Help
+          </button>
+        </div>
       </header>
 
       <div className={`workspace${showControls ? '' : ' controls-hidden'}`}>
@@ -465,18 +480,6 @@ function App() {
         )}
 
         <section className="editor-column" aria-label="Note editor">
-          <label className="title-label" htmlFor="note-title">Note title</label>
-          <input
-            id="note-title"
-            className="note-title"
-            type="text"
-            value={note.title}
-            onChange={(event) => updateTitle(event.target.value)}
-            onBlur={saveTitleOnBlur}
-            placeholder="Untitled ..."
-            aria-label="Note title"
-          />
-
           <div className="editor-targeting-region" ref={targetingRegionRef}>
             {showControls && (
               <>
