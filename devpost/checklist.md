@@ -99,6 +99,8 @@ Build mode: fast
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 - [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
 - [x] Extend the editor box downward to use more viewport space while preserving room below the guidance caption and avoiding page-level scrolling; learner confirmed the final height is right.
+- [ ] Auto-scroll the editor and return the bar near the top when moving through lower visible lines; keep the target line below the pin tip and the bar active, and make held Page Up focus the editor scroller while scrolling backward with the bar, then return focus to the bar on release; verify with overflowing text and learner hands-on test.
+- [ ] Highlight inline-code-formatted text without removing its code styling; verify Apply, increment/decrement, None, and saved-note reload.
 
 ## Code Tour and App Map
 
@@ -132,3 +134,6 @@ Activity mode: Prior practice/recap.
 - Returned to ProseMirror caret-coordinate rectangles after the DOM text-range change stopped all character tracking; moved the bar into a dedicated space above the editor box, shortened the pin needle to a clear target tip, and limited character feedback to pin tips just above a text line — learner feedback showed the bar should begin outside the box and should not outline text when vertically misaligned.
 - Restricted horizontal targeting to characters actually under or very near each pin — hands-on testing confirmed first-line targets, but a pin beyond the end of a shorter second line incorrectly selected that line's last character.
 - Move the centered note title into the header and raise the editor/control group with it; extend the editor downward by 100px total from the prior layout while retaining caption spacing — learner testing approved the title/group alignment and confirmed the final editor height is comfortable without page scrolling.
+- Keep the targeting bar and editor content moving together through overflow — learner reported the bar stops at the fixed editor viewport bottom and requested automatic editor scrolling with the bar repositioned near the top to continue reading/highlighting without separately operating the scrollbar.
+- Refine overflow scrolling after learner testing — the bar obscured the target line after a scroll, and moving focus to the editor disabled the bar. Keep the target line below the pin tip, leave the bar selected during forward auto-scroll, and retain that selection when Page Up focuses the editor scroller; couple the bar's upward movement with backward scrolling, then return focus to the selected bar on key release. Reversal remains user-triggered, never automatic at note end.
+- Allow highlights on inline code — Tiptap's default Code mark excludes every other mark; use a custom exclusion list so Granular highlights can coexist while inline code styling remains intact.

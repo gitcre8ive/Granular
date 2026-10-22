@@ -1,10 +1,15 @@
 import { useEffect } from 'react'
 import { EditorContent, useEditor } from '@tiptap/react'
+import { Code } from '@tiptap/extension-code'
 import StarterKit from '@tiptap/starter-kit'
 import type { Editor as TiptapEditor, JSONContent } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'
 import { GranularHighlight } from '../lib/highlighting'
 import { TargetDecorations } from '../lib/targeting'
+
+const CodeWithHighlights = Code.extend({
+  excludes: 'bold italic strike underline link',
+})
 
 type NoteEditorProps = {
   content: JSONContent
@@ -24,7 +29,12 @@ export function NoteEditor({
   onEditorReady,
 }: NoteEditorProps) {
   const editor = useEditor({
-    extensions: [StarterKit, GranularHighlight, TargetDecorations],
+    extensions: [
+      StarterKit.configure({ code: false }),
+      CodeWithHighlights,
+      GranularHighlight,
+      TargetDecorations,
+    ],
     content,
     editable,
     editorProps: {

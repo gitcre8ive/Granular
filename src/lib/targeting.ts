@@ -1,7 +1,17 @@
 import { Extension, type Editor } from '@tiptap/core'
+import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { getTextCharacterRanges } from './highlighting'
+
+const graphemeSegmenter = new Intl.Segmenter(undefined, {
+  granularity: 'grapheme',
+})
+const TARGET_POSITION_RADIUS = 12
+const textCharacterCache = new WeakMap<
+  ProseMirrorNode,
+  { index: number; length: number }[]
+>()
 
 export type Target = {
   position: number
@@ -50,24 +60,80 @@ function characterRect(editor: Editor, from: number, to: number) {
   }
 }
 
+function getTextNodeCharacters(node: ProseMirrorNode) {
+  const cached = textCharacterCache.get(node)
+  if (cached) return cached
+
+  const characters = Array.from(graphemeSegmenter.segment(node.text ?? ''), ({
+    segment,
+    index,
+  }) => ({ index, length: segment.length }))
+  textCharacterCache.set(node, characters)
+  return characters
+}
+
+function characterTargetsNearPosition(editor: Editor, position: number): Target[] {
+  const doc = editor.state.doc
+  const from = Math.max(0, position - TARGET_POSITION_RADIUS)
+  const to = Math.min(doc.content.size, position + TARGET_POSITION_RADIUS)
+  const targets: Target[] = []
+
+  doc.nodesBetween(from, to, (node, nodePosition) => {
+    if (!node.isText || !node.text) return
+
+    const nodeFrom = Math.max(0, from - nodePosition)
+    const nodeTo = Math.min(node.text.length, to - nodePosition)
+    const characters = getTextNodeCharacters(node)
+    let low = 0
+    let high = characters.length
+    while (low < high) {
+      const middle = Math.floor((low + high) / 2)
+      if (characters[middle].index + characters[middle].length < nodeFrom) {
+        low = middle + 1
+      } else {
+        high = middle
+      }
+    }
+
+    for (let index = low; index < characters.length; index += 1) {
+      const character = characters[index]
+      if (character.index > nodeTo) break
+      const start = nodePosition + character.index
+      const end = start + character.length
+      if (end < from || start > to) continue
+      targets.push({ position: start, length: character.length })
+    }
+  })
+
+  return targets
+}
+
 export function adjacentCharacterOnLine(
   editor: Editor,
   target: Target,
   direction: -1 | 1,
 ): Target | null {
-  const characters = getTextCharacterRanges(editor.state.doc)
+  const characters = characterTargetsNearPosition(editor, target.position)
   const currentIndex = characters.findIndex(
-    (character) => character.from === target.position,
+    (character) => character.position === target.position,
   )
   if (currentIndex < 0) return null
 
   const current = characters[currentIndex]
-  const currentRect = characterRect(editor, current.from, current.to)
+  const currentRect = characterRect(
+    editor,
+    current.position,
+    current.position + current.length,
+  )
   const currentCenterY = (currentRect.top + currentRect.bottom) / 2
   const lineCharacters = characters
     .map((character) => ({
       character,
-      rect: characterRect(editor, character.from, character.to),
+      rect: characterRect(
+        editor,
+        character.position,
+        character.position + character.length,
+      ),
     }))
     .filter(
       ({ rect }) =>
@@ -75,14 +141,14 @@ export function adjacentCharacterOnLine(
     )
     .sort((left, right) => left.rect.left - right.rect.left)
   const lineIndex = lineCharacters.findIndex(
-    ({ character }) => character.from === current.from,
+    ({ character }) => character.position === current.position,
   )
   if (lineIndex < 0) return null
   const adjacent = lineCharacters[lineIndex + direction]
   return adjacent
     ? {
-        position: adjacent.character.from,
-        length: adjacent.character.to - adjacent.character.from,
+        position: adjacent.character.position,
+        length: adjacent.character.length,
       }
     : null
 }
@@ -93,10 +159,20 @@ export function characterInDirectionAtPoint(
   y: number,
   direction: -1 | 1,
 ): Target | null {
-  const characters = getTextCharacterRanges(editor.state.doc)
+  const hit = editor.view.posAtCoords({ left: x, top: y })
+  const characters = hit
+    ? characterTargetsNearPosition(editor, hit.pos)
+    : getTextCharacterRanges(editor.state.doc).map(({ from, to }) => ({
+        position: from,
+        length: to - from,
+      }))
   const measured = characters.map((character) => ({
     character,
-    rect: characterRect(editor, character.from, character.to),
+    rect: characterRect(
+      editor,
+      character.position,
+      character.position + character.length,
+    ),
   }))
   const closest = measured.reduce<(typeof measured)[number] | null>(
     (best, candidate) => {
@@ -151,8 +227,8 @@ export function characterInDirectionAtPoint(
   const next = lineCharacters[nextIndex]
   return next
     ? {
-        position: next.character.from,
-        length: next.character.to - next.character.from,
+        position: next.character.position,
+        length: next.character.length,
       }
     : null
 }
@@ -182,28 +258,31 @@ export function targetAtPoint(editor: Editor, x: number, y: number): Target | nu
   const HORIZONTAL_TARGET_TOLERANCE = 4
 
   const candidates: { target: Target; score: number }[] = []
-  const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+  const characterTargets = hit
+    ? characterTargetsNearPosition(editor, hit.pos)
+    : getTextCharacterRanges(editor.state.doc).map(({ from, to }) => ({
+        position: from,
+        length: to - from,
+      }))
 
-  editor.state.doc.descendants((node, nodePosition) => {
-    if (!node.isText || !node.text) return
+  for (const target of characterTargets) {
+    const rect = characterRect(
+      editor,
+      target.position,
+      target.position + target.length,
+    )
+    const { left, right, top } = rect
+    const horizontalDistance =
+      x < left ? left - x : x > right ? x - right : 0
+    if (horizontalDistance > HORIZONTAL_TARGET_TOLERANCE) continue
+    if (y < top - ABOVE_LINE_TOLERANCE || y > top + CARET_BOX_OVERLAP) continue
+    const score =
+      horizontalDistance +
+      Math.max(top - y, 0) * 2 +
+      (hit ? Math.abs(target.position - hit.pos) * 0.01 : 0)
 
-    for (const { segment, index } of segmenter.segment(node.text)) {
-      const from = nodePosition + index
-      const to = from + segment.length
-      const rect = characterRect(editor, from, to)
-      const { left, right, top } = rect
-      const horizontalDistance =
-        x < left ? left - x : x > right ? x - right : 0
-      if (horizontalDistance > HORIZONTAL_TARGET_TOLERANCE) continue
-      if (y < top - ABOVE_LINE_TOLERANCE || y > top + CARET_BOX_OVERLAP) continue
-      const score =
-        horizontalDistance +
-        Math.max(top - y, 0) * 2 +
-        (hit ? Math.abs(from - hit.pos) * 0.01 : 0)
-
-      candidates.push({ target: { position: from, length: segment.length }, score })
-    }
-  })
+    candidates.push({ target, score })
+  }
 
   return candidates.reduce<{ target: Target; score: number } | null>(
     (best, candidate) => (!best || candidate.score < best.score ? candidate : best),

@@ -65,6 +65,7 @@ function App() {
   const isApplyingRef = useRef(false)
   const targetingRegionRef = useRef<HTMLDivElement>(null)
   const targetTrackRef = useRef<HTMLDivElement>(null)
+  const editorStageRef = useRef<HTMLDivElement>(null)
   const targetRange = getTargetRange(pins)
 
   function updateAppliedRange(range: TextRange | null) {
@@ -515,6 +516,7 @@ function App() {
                     editor={editor}
                     regionRef={targetingRegionRef}
                     trackRef={targetTrackRef}
+                    editorStageRef={editorStageRef}
                     pins={pins}
                     barTop={barTop}
                     onBarTopChange={setBarTop}
@@ -568,7 +570,12 @@ function App() {
                 aria-hidden="true"
               />
             </button>
-            <div className="editor-stage">
+            <div
+              className="editor-stage"
+              ref={editorStageRef}
+              tabIndex={0}
+              aria-label="Scrollable note content. Hold Page Up to scroll backward while the selected bar moves upward; focus returns to the bar on release."
+            >
               <div
                 className="palette-css-vars"
                 style={paletteVariables}

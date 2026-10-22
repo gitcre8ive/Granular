@@ -530,6 +530,11 @@ input:focus-visible {
   background: #fff;
 }
 
+.editor-stage:focus {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
 .editor-targeting-region {
   position: relative;
   min-height: 210px;
