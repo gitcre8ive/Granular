@@ -102,13 +102,14 @@ Build mode: fast
 - [x] Auto-scroll the editor and return the bar near the top when moving through lower visible lines; keep the target line below the pin tip and the bar active, and make held Page Up focus the editor scroller while scrolling backward with the bar, then return focus to the bar on release; learner confirmed smooth scrolling down and back up with Fn+PgUp.
 - [x] Highlight inline-code-formatted text without removing its code styling; learner confirmed it works, and schema-level Apply/clear verification showed the code mark remains.
 - [x] Reduce the Granular home link's clickable area to the word with a small margin; learner confirmed the margin feels right and the rest of the app continues working well.
+- [x] Clarify pin line-boundary behavior in Help: Left/Right stays on the current visible line and stops at its first/last character, short lines offer fewer targets, and manual dragging is needed to enter a red end zone; learner confirmed this is intended targeting behavior.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, and the text-sized app-name link; checked for offline links.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, text-sized app-name link, and intentional line-boundary behavior; checked for offline links.
 
 Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, final editor height, smooth long-note scrolling in both directions, inline-code highlighting, and the text-sized home-link target. `npm run build`, Vite module smoke checks, schema-level code-mark checks, and offline app-map link checks passed.
 Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and `handleSelectorShortcut`; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > handleApplyShortcut` and `showControls`; `src/components/HelpPanel.tsx`.
@@ -140,3 +141,4 @@ Activity mode: Prior practice/recap.
 - Allow highlights on inline code — Tiptap's default Code mark excludes every other mark; use a custom exclusion list so Granular highlights can coexist while inline code styling remains intact.
 - Improve sustained targeting responsiveness by caching grapheme segmentation per text node, limiting character lookup to a nearby range, and skipping redundant pin updates; learner testing confirmed sustained movement remains smooth.
 - Constrain the Granular home link to its text-sized hit area after the learner reported that the stretched grid link could trigger an accidental page refresh; production build passed and the learner confirmed the resulting small margin feels right.
+- Clarify Help for pins at line boundaries — learner explained that arrow movement must stay within targets on the current visible line, even when a neighboring line is longer; the bar selects another line and manual pin dragging can enter red zones. Reframed future note saving as fuller multi-note management because the POC already saves the current note locally.
