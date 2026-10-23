@@ -47,14 +47,21 @@ input:focus-visible {
 }
 
 .app-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 560px) minmax(0, 1fr);
   align-items: center;
   gap: 24px;
   min-height: 58px;
-  margin-bottom: 30px;
+  margin-bottom: 0;
 }
 
 .brand {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  width: fit-content;
+  padding: 2px;
+  margin: -2px;
   color: var(--ink);
   font-family: Ambatah, "Trebuchet MS", system-ui, sans-serif;
   font-size: 2.25rem;
@@ -64,8 +71,36 @@ input:focus-visible {
   text-decoration: none;
 }
 
+.title-control {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  min-width: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.header-actions {
+  grid-column: 3;
+  grid-row: 1;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+}
+
 .header-status {
-  flex: 1;
+  flex: 0 1 auto;
+  min-width: 0;
   color: var(--muted);
   font-size: 0.85rem;
   text-align: right;
@@ -96,6 +131,7 @@ input:focus-visible {
 }
 
 .workspace {
+  margin-top: -8px;
   display: grid;
   grid-template-columns: 190px minmax(0, 1fr);
   gap: 24px;
@@ -365,16 +401,8 @@ input:focus-visible {
   margin: 0 auto;
 }
 
-.title-label {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
 .note-title {
-  width: min(560px, 100%);
+  width: 100%;
   min-height: 42px;
   padding: 7px 11px;
   border: 1px solid var(--line);
@@ -498,12 +526,17 @@ input:focus-visible {
 .editor-stage {
   position: relative;
   width: calc(100% - 112px);
-  height: min(700px, max(300px, calc(100vh - 320px)));
+  height: min(700px, max(300px, calc(100vh - 220px)));
   overflow-x: hidden;
   overflow-y: auto;
   border: 1.5px solid #27383d;
   border-radius: 10px;
   background: #fff;
+}
+
+.editor-stage:focus {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
 }
 
 .editor-targeting-region {
@@ -643,6 +676,37 @@ input:focus-visible {
   }
 }
 
+@media (max-width: 960px) {
+  .app-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 58px 42px;
+    gap: 12px 16px;
+    min-height: 0;
+  }
+
+  .brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .title-control {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    width: min(560px, 100%);
+  }
+
+  .header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 12px;
+  }
+
+  .workspace {
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 720px) {
   .app-shell {
     width: min(100% - 24px, 1480px);
@@ -720,18 +784,33 @@ input:focus-visible {
 
 @media (max-width: 480px) {
   .app-header {
-    flex-wrap: wrap;
+    grid-template-rows: 44px auto 42px;
     gap: 12px;
   }
 
+  .brand {
+    grid-row: 1;
+  }
+
+  .header-actions {
+    display: contents;
+  }
+
+  .help-button {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
   .header-status {
-    order: 3;
+    grid-column: 1 / -1;
+    grid-row: 2;
     width: 100%;
     text-align: left;
   }
 
-  .app-header {
-    margin-bottom: 20px;
+  .title-control {
+    grid-row: 3;
   }
 
   .color-dialog,

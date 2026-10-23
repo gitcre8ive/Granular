@@ -33,6 +33,7 @@ PRD ref: `prd.md > The Core Journey`.
 - **TypeScript** — JavaScript with type checking to catch mistakes in component and note data. [TypeScript documentation](https://www.typescriptlang.org/docs/)
 - **Vite** — local development server and frontend build tool. [Vite guide](https://vite.dev/guide/)
 - **Tiptap React and StarterKit** — editable rich text with document positions and marks. A small custom highlight mark stores the pointer ID and color; a custom extension handles the pointer-range actions. [Tiptap React installation](https://tiptap.dev/docs/editor/getting-started/install/react) · [Tiptap extensions](https://tiptap.dev/docs/editor/extensions/overview) · [ProseMirror coordinate API](https://prosemirror.net/docs/ref/#view.EditorView.posAtCoords)
+- **Tiptap Code extension** — provides inline-code formatting configured to coexist with Granular's highlight mark while retaining the normal exclusions for other formatting marks.
 - **Browser localStorage** — stores the latest note JSON, title, and palette on this browser only. [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 - **Custom HSV color controls** — three native range controls for Hue, Saturation, and Value, plus a small color-conversion helper; no separate color-picker dependency is needed for the prototype.
 
@@ -49,8 +50,9 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 ## Look and Feel
 
 - Use the supplied concepts as visual references: [screen 1](./images/granular_poc_screen1.svg) and [screen 2](./images/granular_poc_screen2.svg). They are references, not app runtime dependencies.
-- Keep the UI spacious and editor-first, with the app name at upper left, Help at upper right, title field above a large centered editing surface, the palette at the left, and the horizontal targeting bar resting above the editor box. The user can drag it down into the box and align pin tips just above a text line.
-- Fit the desktop layout within the reference 1440×667 viewport without page-level scrolling; longer note content scrolls inside the editor.
+- Keep the UI spacious and editor-first, with the app name at upper left, a horizontally centered title field aligned in the same header row, storage status and Help at the right, the palette at the left, and the horizontal targeting bar resting above the editor box. Place the editor and all targeting controls close below the title field, preserving their existing relative spacing when the title is moved into the header. On narrow screens, reflow the header while keeping the title centered and controls usable.
+- Keep the Granular home link's hit area limited to the word with a small margin; do not let its grid cell become a page-wide or column-wide click target.
+- Fit the desktop layout within the reference 1440×667 viewport without page-level scrolling; let the editor box use the available viewport height while keeping its guidance caption below it with visible breathing room from the bottom edge. Longer note content scrolls inside the editor.
 - List Ambatah first for the app name, followed by system sans-serif fallbacks. No font file is currently in the project; do not fetch a font from an external source.
 - Keep the default yellow, the chosen color swatches, and the inactive red pin-end zones visually distinct. Show blue borders around the currently targeted characters before applying a highlight.
 - Animate highlight application as a short, visible progression from the first pin toward the second. Keep the final mark persistent after the animation.
@@ -64,6 +66,7 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 Owns the single-screen layout, app name, Help entry, and top-level dialogs. It composes the editor, palette, and action controls without introducing notes-library or settings screens.
 
 Implements `prd.md > Screens and Layout`, `prd.md > Look and Feel`, and `prd.md > Prompt and invalid-state guidance`.
+The home link is sized to its text rather than stretched across its header grid column, with only a small surrounding margin.
 
 ### Note Title
 
@@ -73,7 +76,7 @@ Implements `prd.md > Editor input and persistence`.
 
 ### Rich Text Editor
 
-Wraps Tiptap. Supports typing, paste, normal cursor movement and text deletion, paragraphs, and highlight marks. Text edits inside a highlighted passage preserve the mark on the remaining passage and newly inserted text within it. Map the active range and endpoint pins through text-edit transactions so the pins remain aligned with the resulting highlighted boundaries.
+Wraps Tiptap. Supports typing, paste, normal cursor movement and text deletion, paragraphs, inline-code formatting, and highlight marks. Highlight marks can coexist with inline-code marks, so code-formatted text remains monospaced while highlighted. Text edits inside a highlighted passage preserve the mark on the remaining passage and newly inserted text within it. Map the active range and endpoint pins through text-edit transactions so the pins remain aligned with the resulting highlighted boundaries.
 
 Implements `prd.md > Editor input and persistence` and `prd.md > Highlight range selection`.
 
@@ -84,6 +87,8 @@ Renders the horizontal bar above the editor box at rest, narrow red inactive str
 Implements `prd.md > Highlight range selection`.
 
 The targeting contract uses Tiptap document positions for the start of each targeted visible character. The derived text range is half-open: it starts at the first targeted character and ends immediately after the final targeted character, so both pin targets are included. With one active pin, both range endpoints resolve to that single character. The red inactive zones are narrow strips at the extreme ends of the bar; the remaining active span extends beyond the text's inset so first and last characters can still be targeted. Character mapping compares ProseMirror caret-coordinate rectangles for each grapheme against the pin coordinates, with the editor's coordinate lookup as a tie-breaker. A target is valid only when the pin tip is within a narrow band just above or slightly into the line's caret box and horizontally overlaps a character (allowing a small tolerance for narrow glyphs); the mapper must not snap to a distant character at the end of a shorter line. Converting pointer coordinates into character positions must account for spaces, punctuation, line wrapping, and paragraph boundaries; verify this mapping before adding UI polish.
+
+For responsive movement through longer notes, reuse grapheme offsets cached per ProseMirror text node, limit nearby-position target lookup to a small radius around the current position, and skip pin-state updates when the computed target is unchanged. Keep coordinate measurement local to the characters needed for the current interaction.
 
 ### Highlight Actions
 
@@ -182,6 +187,7 @@ Granular/
 
 - **Pin coordinate maps to the wrong character, especially after wrapping or around spaces** → use Tiptap/ProseMirror coordinate mapping and visibly show the activated character; verify single characters, spaces, punctuation, wrapped lines, and a paragraph boundary early in the build.
 - **Text edits unexpectedly detach or lose highlight marks** → use Tiptap document marks rather than a separate stale character-index list; verify insertion and deletion inside a colored passage before building the surrounding polish.
+- **Inline-code formatting rejects highlight marks** → override the Code mark's exclusion list to allow `granularHighlight` while retaining its exclusions for other formatting marks; verify applying, extending, and clearing highlights preserves the inline-code mark.
 - **Local storage is unavailable or contains invalid data** → keep the current in-memory editor usable, show an explicit save/load warning, and do not claim persistence succeeded.
 - **Color is cancelled or palette color is edited** → cancellation does not add or change an item; a confirmed edit updates the selected swatch and its existing highlights together.
 
@@ -216,8 +222,10 @@ Granular/
 - Keep the selected targeting control transient in `TargetBar`: `bar`, pin index 0 or 1, or no selection. Pointer-down selects and focuses the clicked bar or pin. A document-level pointer/focus listener clears selection when focus or pointer interaction moves outside the targeting controls; Tab focus on a targeting control may select it for keyboard users.
 - Handle arrow keys only while the selected bar or pin itself is focused. Prevent the browser default only for the handled unmodified arrow key. Ignore Shift, Control, Alt, and Meta combinations so browser and OS shortcuts are not consumed. Do not handle arrow keys while the Tiptap editor, title field, Help dialog, color dialog, or other controls have focus.
 - Left/Right move only the selected pin. Use grapheme ranges and rendered character rectangles to find the adjacent character on the same visual line; do not jump across a wrapped line or paragraph. At either line boundary, leave the pin on that boundary character. Update the pin percentage from the character rectangle and retain the existing blue target decoration. Arrow movement does not dispatch a highlight-mark transaction.
+- Arrow movement is intentionally limited to characters on the pin's current visible line: it neither wraps onto neighboring lines nor enters a red end zone from a line endpoint. Short lines consequently expose fewer arrow-key targets than longer neighboring lines. Moving the bar targets a different line; dragging a pin manually can place it into a red zone. Help must explain these boundaries as intentional behavior.
 - When the selected pin has no target (including in a red end zone), resolve the closest rendered text line to the pin-tip height and choose the next character center in the requested horizontal direction. From the left red zone, Right reaches the first character; from the right red zone, Left reaches the last. Keep the target null while the bar tip is outside the existing vertical targeting tolerance; only its horizontal pin position changes until it is aligned with text.
 - Up/Down move the selected bar by a small, bounded vertical pixel step within the existing targeting region, allowing native repeated keydown events while held. Reuse the pointer-drag pin remapping behavior after each vertical move. Do not change the established bar limits or the targeting coordinate tolerance.
+- When the bar target reaches the lower two visible editor lines and the editor stage has remaining scrollable content, advance `editorStageRef.current.scrollTop` so the targeted character line moves near the top, below the pin tip with a small clearance; return the bar to its upper targeting position without moving focus away from the bar. On an unmodified Page Up while the bar is selected, focus the editor stage once but preserve the bar's selected state. While Page Up remains held, animate the stage's `scrollTop` upward with requestAnimationFrame and use actual scroll deltas to move the selected bar in sync; stop at the beginning of the note while keeping the bar selected. Do not refocus the stage on repeated keydown events. While the stage is focused in this state, Up/Down continue moving the selected bar. On Page Up keyup, stop the animation and restore focus to the bar while preserving its selection. Never auto-reverse at the end of the note. Share the forward transition between keyboard movement and pointer dragging, remap pin targets after forward and reverse scrolling, and cap scrolling at the editor's actual end.
 - Keep pointer capture and drag handling unchanged except for selecting/focusing the control on pointer-down, so a user can switch from keyboard movement to mouse/trackpad movement without restarting the interaction.
 - Add a selector-shortcut handler for Ctrl+Shift+`BracketLeft`, Ctrl+Shift+`BracketRight`, and the physical backslash key (`Backslash` or `IntlBackslash`, with `\`/`|` key-value fallbacks). Run it only when controls are visible and the active element is not an input, textarea, select, textbox, contenteditable, or dialog. Select and focus the left pin, right pin, or bar respectively; include the track itself when resolving the bar because it is the bar element, not a descendant. Unmodified arrow movement then uses the existing selected-control implementation. Preserve click/Tab selection and platform/browser defaults for all unrecognized events.
 - Use Control+Shift on macOS (not Command); identify selector keys by physical key codes so shifted glyphs do not affect recognition. Physical bracket/backslash positions vary across keyboard layouts, and the browser/OS may reserve a shortcut before the app receives it. Ctrl+Shift+Page Up/Page Down can be captured by browser tab-management shortcuts, so do not use them for app selection.
@@ -230,3 +238,10 @@ Granular/
 - Use the supplied local `square-chevron-left.svg` and `square-chevron-right.svg` assets inside the existing decrement/increment buttons. Preserve action callbacks, hold-to-repeat behavior, accessible labels, and a minimum 44px square target.
 - Extend Help with concise pin/bar arrow-key instructions, same-line movement limits, ordinary editor arrow-key behavior, and hide/restore guidance.
 - The toggle does not modify or persist note data. The SVG files remain local project assets.
+
+### Targeting responsiveness and header hit area
+
+- Cache grapheme segmentation per ProseMirror text node and inspect a bounded neighborhood around the current target for adjacent-character movement instead of rescanning the entire note.
+- Avoid replacing pin state when the computed percentage and target position/length have not changed.
+- Size the app-name home link to its text with a small margin so the surrounding header area is not accidentally clickable.
+- The learner confirmed sustained targeting, long-note scrolling in both directions, and the narrowed home-link click area in hands-on testing.

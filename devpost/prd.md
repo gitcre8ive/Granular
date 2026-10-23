@@ -23,10 +23,10 @@ Granular is a local note editor designed for precise, low-friction text highligh
 
 Granular is intentionally a single-screen editor for this proof of concept.
 
-- Top-left: app name, styled in Ambatah.
-- Top area: note title field with placeholder “Untitled …”.
-- Center: a large text editor box sized to allow comfortable reading and editing of a short note.
+- Header: the Granular home link at the left, centered note-title field with placeholder “Untitled …”, storage status, and Help at the right. Keep the link hit area to the word and a small margin so nearby header clicks do not refresh the page. On narrow screens, the header may wrap while keeping the title centered and controls usable.
+- Center: a large text editor box sized to allow comfortable reading and editing of a short note. It should use more of the available viewport height while keeping the guidance caption beneath it visibly above the bottom edge.
 - Above the editor box at rest: a horizontal target bar spanning most of the editor width, with two control pins descending from it. The user can drag the bar down into the box and align the pin tips just above a text line.
+- Keep the editor box and targeting controls close beneath the header title field; moving the title into the header raises the editor and control group together without changing their relative spacing.
 - Left sidebar: a stack of color-filled pointer bars, arranged in rows of four, representing the active and available highlight colors.
 - Right side of the target bar: a color-apply button for the currently selected pointer bar, plus the “Add pointer bar” control for creating more colors.
 - A small prompt or instructional message appears if no valid range is active, guiding the user to drag the bar and aim the pins before applying a highlight.
@@ -53,6 +53,7 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - The editor content is retained in local browser storage and remains after a refresh.
 - For the prototype, the last edited version of the active note is the version stored locally; there is no full note-library flow yet.
 - The app should allow ordinary system text editing and deletion behavior to continue without conflicting with the highlight layer.
+- The user can apply and remove highlights on inline-code-formatted text while its code styling remains intact.
 - When text is inserted or deleted inside an applied highlight, the active range and endpoint pins stay aligned with the resulting highlighted text; inserted text inherits the mark.
 
 ### Highlight range selection
@@ -62,7 +63,7 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - A pin in the red inactive region at either end is inactive; when moved away from it, it becomes active and can target a character.
 - The selected range is defined by the positions of the two active pins.
 - When a pin tip is positioned just above a valid text line and targets a character, that character appears with a blue activation border; pins away from a line do not show a character target.
-- The active color button applies the currently selected color to the full span between the pins, including the endpoints and any spaces in the range.
+- The active color button applies the currently selected color to the full span between the pins, including the endpoints, any spaces in the range, and inline-code-formatted text without removing its code styling.
 - A single active pin with the other end inactive can highlight a single character.
 - The active "None" control can clear an already-highlighted range instantly when the user wants to remove those highlights without using the decrement controls.
 
@@ -171,7 +172,10 @@ This addition extends the completed editor workflow without changing the existin
 - Keyboard pin movement changes only pin positions and target feedback. It does not apply, extend, decrement, or clear highlights. The existing apply, increment, decrement, and None actions retain their behavior.
 - Mouse and trackpad dragging remain usable after keyboard movement and can continue from the current position.
 - Clicking or moving focus to another control, the note title, the editor, or elsewhere deactivates targeting selection. Arrow keys then keep their ordinary browser/editor behavior, including text cursor movement and scrolling.
+- Left/Right movement of an active pin stays within the characters on its current visible line and stops at its first or last character; it does not wrap to neighboring lines or move into a red end zone. A shorter line has only its own characters as arrow-key targets, even if a neighboring line is longer. To target another line, move the bar to that line; to move a pin into a red end zone, drag it manually. This is intentional and must be explained as such in Help.
 - Arrow commands are handled only when the corresponding targeting control has focus. Do not intercept modified arrow shortcuts (Shift, Control, Alt, or Meta); no platform-specific modifier is required. The browser/operating-system key-repeat behavior provides held-key repetition across Windows, macOS, and Linux.
+- When the bar reaches the lower two visible text lines and more editor content can scroll into view, automatically scroll the editor forward and return the bar near its upper targeting position. Keep the targeted text line below the pin tip so it is not obscured, and keep the bar focused and selected during this transition. When the user holds Page Up while the bar is selected, focus the editor scroller while retaining the bar's active selection; each repeated keypress moves the bar upward and scrolls earlier text into view together. Keep the bar selected in the scroller-focused state; releasing Page Up stops the motion and returns focus to the bar for continued arrow-key movement. Never reverse automatically at the end of the note. Apply forward auto-scroll during both keyboard bar movement and pointer dragging; stop advancing when the editor has reached its end.
+- Keep repeated targeting movement responsive on longer notes by avoiding unnecessary work outside the nearby character range. The learner confirmed sustained movement and long-note scrolling remain smooth.
 
 ### Target-selection shortcuts
 

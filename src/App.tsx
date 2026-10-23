@@ -65,6 +65,7 @@ function App() {
   const isApplyingRef = useRef(false)
   const targetingRegionRef = useRef<HTMLDivElement>(null)
   const targetTrackRef = useRef<HTMLDivElement>(null)
+  const editorStageRef = useRef<HTMLDivElement>(null)
   const targetRange = getTargetRange(pins)
 
   function updateAppliedRange(range: TextRange | null) {
@@ -408,22 +409,37 @@ function App() {
     <main className="app-shell">
       <header className="app-header">
         <a className="brand" href="/" aria-label="Granular home">Granular</a>
-        <div
-          className={`header-status${storageWarning ? ' is-warning' : ''}`}
-          role="status"
-          aria-live="polite"
-        >
-          {storageMessage ?? 'Your note is stored in this browser'}
+        <div className="title-control">
+          <label className="visually-hidden" htmlFor="note-title">Note title</label>
+          <input
+            id="note-title"
+            className="note-title"
+            type="text"
+            value={note.title}
+            onChange={(event) => updateTitle(event.target.value)}
+            onBlur={saveTitleOnBlur}
+            placeholder="Untitled ..."
+            aria-label="Note title"
+          />
         </div>
-        <button
-          className="help-button"
-          type="button"
-          aria-expanded={showHelp}
-          aria-controls="granular-help-panel"
-          onClick={() => setShowHelp(true)}
-        >
-          Help
-        </button>
+        <div className="header-actions">
+          <div
+            className={`header-status${storageWarning ? ' is-warning' : ''}`}
+            role="status"
+            aria-live="polite"
+          >
+            {storageMessage ?? 'Your note is stored in this browser'}
+          </div>
+          <button
+            className="help-button"
+            type="button"
+            aria-expanded={showHelp}
+            aria-controls="granular-help-panel"
+            onClick={() => setShowHelp(true)}
+          >
+            Help
+          </button>
+        </div>
       </header>
 
       <div className={`workspace${showControls ? '' : ' controls-hidden'}`}>
@@ -465,18 +481,6 @@ function App() {
         )}
 
         <section className="editor-column" aria-label="Note editor">
-          <label className="title-label" htmlFor="note-title">Note title</label>
-          <input
-            id="note-title"
-            className="note-title"
-            type="text"
-            value={note.title}
-            onChange={(event) => updateTitle(event.target.value)}
-            onBlur={saveTitleOnBlur}
-            placeholder="Untitled ..."
-            aria-label="Note title"
-          />
-
           <div className="editor-targeting-region" ref={targetingRegionRef}>
             {showControls && (
               <>
@@ -512,6 +516,7 @@ function App() {
                     editor={editor}
                     regionRef={targetingRegionRef}
                     trackRef={targetTrackRef}
+                    editorStageRef={editorStageRef}
                     pins={pins}
                     barTop={barTop}
                     onBarTopChange={setBarTop}
@@ -565,7 +570,12 @@ function App() {
                 aria-hidden="true"
               />
             </button>
-            <div className="editor-stage">
+            <div
+              className="editor-stage"
+              ref={editorStageRef}
+              tabIndex={0}
+              aria-label="Scrollable note content. Hold Page Up to scroll backward while the selected bar moves upward; focus returns to the bar on release."
+            >
               <div
                 className="palette-css-vars"
                 style={paletteVariables}
