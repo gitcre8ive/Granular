@@ -200,6 +200,7 @@ This addition extends the completed editor workflow without changing the existin
 
 - With a valid one-character or two-pin target and controls visible, pressing Enter while focus is on the page, target bar, or a pin applies the active color to the targeted range, matching the color-apply button.
 - Do not intercept Enter while the title, editor, another editable field, or a dialog has focus. Require a target and do not repeatedly start the highlight animation from a held Enter key.
+- Ctrl+Shift+Enter for applying a highlight to an ordinary editor text selection is not included in this proof of concept; users use the targeting pins and bar.
 
 ### Control visibility and icons
 

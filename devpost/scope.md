@@ -37,6 +37,7 @@ Build the editor mode only: a short editable note, a small set of distinct color
 - **Trash and note restoration/deletion:** outside the editor-focused proof of concept.
 - **Read-only screen and saved-notes library:** not needed to demonstrate the editor interaction; local persistence is enough for this demo.
 - **Hide-pointer-bar/eye control:** the learner decided it does not add enough to the core idea.
+- **Ctrl+Shift+Enter for highlighting ordinary editor selections:** deferred from this proof of concept; highlighting remains driven by the dedicated target bar and pins.
 
 ## Post-5-build Iteration
 
