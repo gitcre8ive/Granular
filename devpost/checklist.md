@@ -99,6 +99,7 @@ Build mode: fast
 - [x] Hide/restore and final demo flow explored — learner confirmed the requested controls hide and restore, Help remains available and explains the new keyboard behavior, and the Lucide buttons retain their actions.
 - [x] Selector shortcuts explored — learner verified left-pin, right-pin, and bar selection, direct switching and arrow movement, Enter-to-apply for one and two characters, normal editor newline behavior, and shortcut disablement while controls are hidden.
 - [x] Theme selection explored — after Timberwolf was removed and the tagline added, the learner retested the revised app and confirmed everything looks right and works; they plan further testing and will report any issues.
+- [x] Revised Help and editor caption tried — learner confirmed the new note-entry/formatting guidance, full reordered highlighting instructions, future-feature and feedback details, and caption below the editor are all in order; the caption now stays within the editor width.
 - [x] Final kick-the-tires review for the theme-settings update — learner waived another pass after retesting the revised themes and tagline and confirming they looked right and worked.
 
 ## Final Review
@@ -106,7 +107,7 @@ Build mode: fast
 - [x] Place decrement/increment centered above the moving bar and align the color and None actions in a row to its right.
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
-- [x] Final review complete — the learner retested the revised theme list and tagline, confirmed they looked right and worked, waived further review, and said the proof of concept should be ready for 6-ship.
+- [x] Final review complete — learner retested the revised Help and caption, confirmed all is in order, and closed the review.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 - [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
@@ -115,16 +116,17 @@ Build mode: fast
 - [x] Highlight inline-code-formatted text without removing its code styling; learner confirmed it works, and schema-level Apply/clear verification showed the code mark remains.
 - [x] Reduce the Granular home link's clickable area to the word with a small margin; learner confirmed the margin feels right and the rest of the app continues working well.
 - [x] Clarify pin line-boundary behavior in Help: Left/Right stays on the current visible line and stops at its first/last character, short lines offer fewer targets, and manual dragging is needed to enter a red end zone; learner confirmed this is intended targeting behavior.
-- [ ] Settings theme behavior verified, learner feedback resolved, and the updated proof of concept confirmed ready.
+- [x] Settings theme behavior verified, learner feedback resolved, and the updated proof of concept confirmed ready.
 - [x] Remove the visually similar Timberwolf theme, migrate an existing Timberwolf preference to System, and add the small non-clickable tagline below the Granular name; the learner retested and confirmed the revised behavior works.
 - [x] Consider Ctrl+Shift+Enter for applying a highlight to ordinary editor selection — not implemented because it requires new selection-aware shortcut behavior and could not meet the learner's few-seconds condition; documented as outside this POC. The learner waived further review and said the POC should be ready for 6-ship.
+- [x] Refresh Help with the requested editor entry/formatting guidance, preserve and renumber the existing targeting instructions, add the future-version and feedback details, and extend the editor caption with range/apply/Help-shortcut guidance; learner retested after the caption-width fix and confirmed all is in order.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, text-sized app-name link, intentional line-boundary behavior, separate theme preferences, and the brand tagline; checked for offline links.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, text-sized app-name link, intentional line-boundary behavior, separate theme preferences, the brand tagline, and the updated Help/caption implementation; checked for offline links.
 
 Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, final editor height, smooth long-note scrolling in both directions, inline-code highlighting, and the text-sized home-link target. `npm run build`, Vite module smoke checks, schema-level code-mark checks, and offline app-map link checks passed.
 Theme settings slice mechanical evidence: The revised `npm run build` passed; a focused Node check verified the ten selectable options and migration of a saved Timberwolf preference to System. Vite served the Settings module and all requested SVGs, and relative app-map links resolve. Contrast checks passed for the dark editor, dark modal controls, and image-theme header text. Learner retest confirmed the revised list and tagline look right and work. The learner waived an additional kick-the-tires pass and said the POC should be ready for 6-ship. A fresh `npm run build` also passed during final review; the dev server was not running for an additional browser pass.
@@ -134,6 +136,7 @@ Reflection: Already covered; personal response is recorded only in the ignored l
 Activity mode: Prior practice/recap.
 
 ## Revisions
+- Add the requested 17-item Help guidance and editor-caption sentence. The learner reported that caption text extended beyond the editor's right edge; constrain its width to match the editor stage on desktop and responsive layouts. Production build passed; learner retested the fix and confirmed the caption stays within the editor and all Help is in order.
 - Let inactive pins move inward with Left/Right — hands-on testing found that keyboard movement required an active target, trapping selected pins in the red zones and when the bar was outside the text-targeting band.
 - Accept Space key code and key-value variants for Ctrl+Shift+Space — hands-on testing confirmed the bracket selectors but found the bar selector did not activate on the learner's keyboard/browser.
 - Replace Ctrl+Shift+Page Up/Page Down bar selectors with Ctrl+Shift+Backslash — learner testing confirmed Page Up/Page Down did not select the bar; browsers commonly reserve those combinations for tab management before a page can handle them.

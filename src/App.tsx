@@ -633,7 +633,7 @@ function App() {
             </div>
           </div>
           <p className="editor-caption" role="status" aria-live="polite">
-            {actionMessage ?? 'Drag the horizontal bar up or down. Move a pin away from a red end to target a character.'}
+            {actionMessage ?? 'Drag the horizontal bar up or down. Move a pin away from a red end to target a character. Set your desired range and click the button to the right of the bar. For a faster workflow, use the keyboard shortcuts in the Help box.'}
           </p>
         </section>
       </div>

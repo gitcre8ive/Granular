@@ -110,9 +110,11 @@ Implements `prd.md > Color pointer bars` and `prd.md > Product Decisions`.
 
 ### Help
 
-Opens a lightweight guidance panel from the upper-right Help control. Explain the bar and pins, the blue endpoint state, range application, single-character targeting, None, and increment/decrement behavior.
+Opens a lightweight guidance panel from the upper-right Help control. Lead with note-entry and formatting guidance (paste, paragraphs, line breaks, bold, italics, underline, and backtick inline code), followed by the existing bar and pin instructions, blue endpoint state, range application, keyboard movement and shortcuts, increment/decrement, None, control visibility, and local persistence. End with the requested proof-of-concept outlook and feedback contact.
 
 Implements `prd.md > Prompt and invalid-state guidance`.
+
+The editor caption remains below the note box and directs users to set their desired range, click the button beside the bar, and consult Help for keyboard shortcuts. Action feedback may replace this guidance while an action message is active.
 
 ### Settings and Theme Preferences
 
