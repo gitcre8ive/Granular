@@ -13,7 +13,7 @@ The note itself lives in Tiptap, an editable text area built for formatted text.
 
 The app keeps one current note, its title, and the user's color palette in this browser's local storage. There is no account, server, or cloud sync. A color swatch has an ID; highlights refer to that swatch, so editing its color updates text that already uses it.
 
-This shape uses a ready-made editing engine for the difficult part—editable formatted text—and keeps the rest of the app focused on the single editor screen and its custom controls.
+This shape uses a ready-made editing engine for the difficult part—editable formatted text—and keeps the rest of the app focused on the single editor screen and its custom controls. A separate, small browser preference record stores the selected appearance.
 
 ## The Core Journey Through the System
 
@@ -34,7 +34,7 @@ PRD ref: `prd.md > The Core Journey`.
 - **Vite** — local development server and frontend build tool. [Vite guide](https://vite.dev/guide/)
 - **Tiptap React and StarterKit** — editable rich text with document positions and marks. A small custom highlight mark stores the pointer ID and color; a custom extension handles the pointer-range actions. [Tiptap React installation](https://tiptap.dev/docs/editor/getting-started/install/react) · [Tiptap extensions](https://tiptap.dev/docs/editor/extensions/overview) · [ProseMirror coordinate API](https://prosemirror.net/docs/ref/#view.EditorView.posAtCoords)
 - **Tiptap Code extension** — provides inline-code formatting configured to coexist with Granular's highlight mark while retaining the normal exclusions for other formatting marks.
-- **Browser localStorage** — stores the latest note JSON, title, and palette on this browser only. [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- **Browser localStorage** — stores the latest note JSON, title, and palette, plus a separate appearance preference, on this browser only. [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 - **Custom HSV color controls** — three native range controls for Hue, Saturation, and Value, plus a small color-conversion helper; no separate color-picker dependency is needed for the prototype.
 
 Versions should be selected by the current Vite React TypeScript starter and package manager during the first build step, then recorded in `package-lock.json`. Use a current Node.js LTS release with npm.
@@ -50,20 +50,24 @@ Versions should be selected by the current Vite React TypeScript starter and pac
 ## Look and Feel
 
 - Use the supplied concepts as visual references: [screen 1](./images/granular_poc_screen1.svg) and [screen 2](./images/granular_poc_screen2.svg). They are references, not app runtime dependencies.
-- Keep the UI spacious and editor-first, with the app name at upper left, a horizontally centered title field aligned in the same header row, storage status and Help at the right, the palette at the left, and the horizontal targeting bar resting above the editor box. Place the editor and all targeting controls close below the title field, preserving their existing relative spacing when the title is moved into the header. On narrow screens, reflow the header while keeping the title centered and controls usable.
+- Keep the UI spacious and editor-first, with the app name at upper left, a horizontally centered title field aligned in the same header row, storage status to the left of Settings and Help at the right, the palette at the left, and the horizontal targeting bar resting above the editor box. Place the editor and all targeting controls close below the title field, preserving their existing relative spacing when the title is moved into the header. On narrow screens, reflow the header while keeping the title centered and controls usable.
 - Keep the Granular home link's hit area limited to the word with a small margin; do not let its grid cell become a page-wide or column-wide click target.
+- Place the tagline “Focus on the page. Highlight when you're ready.” beneath the Granular name in visibly smaller text. The tagline is not part of the home link.
 - Fit the desktop layout within the reference 1440×667 viewport without page-level scrolling; let the editor box use the available viewport height while keeping its guidance caption below it with visible breathing room from the bottom edge. Longer note content scrolls inside the editor.
 - List Ambatah first for the app name, followed by system sans-serif fallbacks. No font file is currently in the project; do not fetch a font from an external source.
 - Keep the default yellow, the chosen color swatches, and the inactive red pin-end zones visually distinct. Show blue borders around the currently targeted characters before applying a highlight.
 - Animate highlight application as a short, visible progression from the first pin toward the second. Keep the final mark persistent after the animation.
 - Use direct, helpful copy. The Help area explains how to position the bar, target endpoints, apply or clear a range, and use increment/decrement.
+- The Settings icon precedes Help and opens a centered theme modal. Its choices are single-select and immediately apply the selected appearance.
+- Define shared CSS theme variables for page background, text, surfaces, controls, borders, and focus indicators. System follows `prefers-color-scheme`; explicit Dark remains dark regardless of the OS setting.
+- Starry Night and Bench Wood 1 use the supplied local SVGs as page backgrounds while foreground surfaces remain sufficiently opaque and high contrast for reading and controls.
 - Make the editor usable at the supplied concept's desktop proportions while allowing the control layout to adapt on narrower screens.
 
 ## Components
 
 ### App Shell
 
-Owns the single-screen layout, app name, Help entry, and top-level dialogs. It composes the editor, palette, and action controls without introducing notes-library or settings screens.
+Owns the single-screen layout, app name, Help and Settings entries, and top-level dialogs. It composes the editor, palette, and action controls without introducing a notes library or general settings screen.
 
 Implements `prd.md > Screens and Layout`, `prd.md > Look and Feel`, and `prd.md > Prompt and invalid-state guidance`.
 The home link is sized to its text rather than stretched across its header grid column, with only a small surrounding margin.
@@ -110,6 +114,14 @@ Opens a lightweight guidance panel from the upper-right Help control. Explain th
 
 Implements `prd.md > Prompt and invalid-state guidance`.
 
+### Settings and Theme Preferences
+
+`SettingsDialog` presents the supported theme choices as an accessible single-selection control. Choosing a theme updates the app immediately. System follows the current operating-system color scheme; the other options apply their named solid or image background and corresponding readable foreground tokens.
+
+### Theme Preference Persistence
+
+Load and save a small versioned theme preference independently from the active note. A missing or invalid preference selects System. Report storage write failures visibly; never imply a preference was saved when it was not.
+
 ### Local Persistence
 
 Loads and saves the single active note and palette in browser localStorage. Persist the Tiptap document as JSON so marks and text survive refresh. Report a visible problem if reading or writing storage fails; do not silently claim a save succeeded.
@@ -118,7 +130,7 @@ Implements `prd.md > Editor input and persistence` and `prd.md > States and Boun
 
 ## Data Model
 
-One versioned local record is stored under a Granular-specific localStorage key:
+The note and theme preference are separate versioned records stored under Granular-specific localStorage keys:
 
 ```ts
 type PaletteColor = {
@@ -134,6 +146,18 @@ type SavedNote = {
   palette: PaletteColor[];
   activePaletteId: string;
 };
+
+type ThemePreference =
+  | 'system'
+  | 'dark'
+  | 'light-skin'
+  | 'pastel-pink'
+  | 'mint-green'
+  | 'light-cream'
+  | 'almond'
+  | 'light-cyan'
+  | 'starry-night'
+  | 'bench-wood-1';
 ```
 
 - On first launch, create a blank document, an “Untitled” title, one default yellow palette item, and no active highlight range. If the user clears the title, normalize it back to “Untitled” when saving.
@@ -142,6 +166,8 @@ type SavedNote = {
 - The active target positions are transient editor state, not part of saved note content. They are recalculated as the user targets text and are not restored after refresh.
 - Persist edits to the latest single note and its palette. There is no note history, multi-note collection, remote sync, or account.
 - Validate the record version and required fields when loading. If stored content is invalid, show a recovery message and avoid silently overwriting the saved value.
+- Store the theme preference separately from `SavedNote` under its own versioned localStorage key. An unavailable or invalid preference falls back to System; a failed write is surfaced to the user.
+- If a previously saved Timberwolf value is encountered after its removal, migrate the preference to System rather than showing an unselected theme or failing to initialize.
 
 ## File Structure
 
@@ -164,14 +190,16 @@ Granular/
 │   │   ├── HighlightActions.tsx # Apply, None, increment, decrement
 │   │   ├── Palette.tsx        # Color squares and add/edit actions
 │   │   ├── ColorDialog.tsx    # Preset and HSV color selection
-│   │   └── HelpPanel.tsx      # Interaction guidance
+│   │   ├── HelpPanel.tsx      # Interaction guidance
+│   │   └── SettingsDialog.tsx # Theme preferences modal
 │   ├── hooks/
 │   │   └── useSavedNote.ts    # Load, validate, and persist one local note
 │   ├── lib/
 │   │   ├── highlight.ts       # Highlight mark and range operations
 │   │   ├── color.ts           # HSV/RGB/hex conversion helpers
-│   │   └── storage.ts         # Versioned localStorage serialization
-│   └── styles.css             # Layout, typography, controls, and animation
+│   │   ├── storage.ts         # Versioned localStorage note serialization
+│   │   └── settings.ts        # Theme choices and preference persistence
+│   └── styles.css             # Layout, theme tokens, controls, and animation
 ├── devpost/                   # Planning documents and reference images
 └── README.md                  # Run, test, and demo instructions
 ```
@@ -180,7 +208,7 @@ Granular/
 
 - **No external services.** No API, database server, account, secret, or paid service is required.
 - **NPM packages:** React, React DOM, Vite, TypeScript, Tiptap React, Tiptap StarterKit, and the required ProseMirror peer package(s). Package links: [React](https://www.npmjs.com/package/react), [Vite](https://www.npmjs.com/package/vite), [Tiptap React](https://www.npmjs.com/package/@tiptap/react), [Tiptap StarterKit](https://www.npmjs.com/package/@tiptap/starter-kit).
-- **Browser APIs:** contenteditable/editor selection geometry and localStorage. They run locally in the browser; there are no API calls, keys, or usage costs.
+- **Browser APIs:** contenteditable/editor selection geometry, localStorage, and `prefers-color-scheme` for the System theme. They run locally in the browser; there are no API calls, keys, or usage costs.
 - **Color math:** a small in-project HSV conversion helper; no color service or additional picker package.
 
 ## Important Failure Modes
@@ -189,6 +217,7 @@ Granular/
 - **Text edits unexpectedly detach or lose highlight marks** → use Tiptap document marks rather than a separate stale character-index list; verify insertion and deletion inside a colored passage before building the surrounding polish.
 - **Inline-code formatting rejects highlight marks** → override the Code mark's exclusion list to allow `granularHighlight` while retaining its exclusions for other formatting marks; verify applying, extending, and clearing highlights preserves the inline-code mark.
 - **Local storage is unavailable or contains invalid data** → keep the current in-memory editor usable, show an explicit save/load warning, and do not claim persistence succeeded.
+- **Theme preference storage is unavailable or invalid** → use System appearance, show a visible storage warning, and leave the separate note record unchanged.
 - **Color is cancelled or palette color is edited** → cancellation does not add or change an item; a confirmed edit updates the selected swatch and its existing highlights together.
 
 ## What Was Simplified and Why
@@ -230,6 +259,7 @@ Granular/
 - Add a selector-shortcut handler for Ctrl+Shift+`BracketLeft`, Ctrl+Shift+`BracketRight`, and the physical backslash key (`Backslash` or `IntlBackslash`, with `\`/`|` key-value fallbacks). Run it only when controls are visible and the active element is not an input, textarea, select, textbox, contenteditable, or dialog. Select and focus the left pin, right pin, or bar respectively; include the track itself when resolving the bar because it is the bar element, not a descendant. Unmodified arrow movement then uses the existing selected-control implementation. Preserve click/Tab selection and platform/browser defaults for all unrecognized events.
 - Use Control+Shift on macOS (not Command); identify selector keys by physical key codes so shifted glyphs do not affect recognition. Physical bracket/backslash positions vary across keyboard layouts, and the browser/OS may reserve a shortcut before the app receives it. Ctrl+Shift+Page Up/Page Down can be captured by browser tab-management shortcuts, so do not use them for app selection.
 - Add an Enter handler for applying the active color only when controls are visible, a valid pin-derived range exists, and focus is on the page, bar, or a pin. Use the existing apply action and animation; ignore repeat, composition, modified Enter, missing targets, and focus in the editor, title, other controls, or dialogs so normal editing and button activation are preserved.
+- Do not bind Ctrl+Shift+Enter to the editor selection; ordinary text selection does not invoke highlight application in this proof of concept.
 
 ### Visibility and icon controls
 

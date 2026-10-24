@@ -37,6 +37,7 @@ Build the editor mode only: a short editable note, a small set of distinct color
 - **Trash and note restoration/deletion:** outside the editor-focused proof of concept.
 - **Read-only screen and saved-notes library:** not needed to demonstrate the editor interaction; local persistence is enough for this demo.
 - **Hide-pointer-bar/eye control:** the learner decided it does not add enough to the core idea.
+- **Ctrl+Shift+Enter for highlighting ordinary editor selections:** deferred from this proof of concept; highlighting remains driven by the dedicated target bar and pins.
 
 ## Post-5-build Iteration
 
@@ -54,3 +55,9 @@ This approved, controlled extension preserves the completed proof of concept and
 - Keep sustained targeting responsive as notes grow, and restrict the Granular home link to its text with a small click margin to reduce accidental refreshes. These are interaction refinements to the existing editor, not additions to the product boundary.
 
 The previous cut of the hide-pointer-bar/eye control remains as planning history; this iteration explicitly supersedes that decision for the demo and ongoing product.
+
+## Theme Preferences Iteration
+
+Add a focused Settings modal for choosing the app's appearance, without adding a general settings screen or notes library. The available mutually exclusive choices are System (the default and follows the operating system), Dark, Light Skin (#fdf5e2), Pastel Pink (#ffdee2), Mint Green (#9fcdb1), Light Cream (#e5e3d9), Almond (#EDE0D4), Light Cyan (#e3ffff), Starry Night (the supplied `starry-night.svg`), and Bench Wood 1 (the supplied `bench-wood-1.svg`). Save the selected appearance locally in this browser. Keep editor text, buttons, icons, dialogs, and focus indicators readable against each theme.
+
+The brand area also includes the small, non-clickable tagline “Focus on the page. Highlight when you're ready.” beneath the Granular name; the home link remains limited to the name.

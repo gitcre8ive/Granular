@@ -5,6 +5,7 @@ import { ColorDialog } from './components/ColorDialog'
 import { HelpPanel } from './components/HelpPanel'
 import { HoldRepeatButton } from './components/HoldRepeatButton'
 import { NoteEditor } from './components/NoteEditor'
+import { SettingsDialog } from './components/SettingsDialog'
 import { MIN_BAR_TOP, TargetBar } from './components/TargetBar'
 import {
   applyHighlight,
@@ -21,6 +22,11 @@ import {
   type PaletteColor,
   type SavedNote,
 } from './lib/storage'
+import {
+  loadThemePreference,
+  saveThemePreference,
+  type ThemePreference,
+} from './lib/settings'
 import {
   targetPercentForCharacter,
   type PinTarget,
@@ -46,11 +52,17 @@ function pinForCharacter(
 
 function App() {
   const [initialLoad] = useState(loadSavedNote)
+  const [initialTheme] = useState(loadThemePreference)
   const [note, setNote] = useState(initialLoad.note)
   const noteRef = useRef(note)
   const [editor, setEditor] = useState<Editor | null>(null)
-  const [storageMessage, setStorageMessage] = useState(initialLoad.message)
-  const [storageWarning, setStorageWarning] = useState(initialLoad.blocked)
+  const [storageMessage, setStorageMessage] = useState(
+    initialLoad.message ?? initialTheme.message,
+  )
+  const [storageWarning, setStorageWarning] = useState(
+    initialLoad.blocked || initialTheme.message !== null,
+  )
+  const [theme, setTheme] = useState<ThemePreference>(initialTheme.theme)
   const [pins, setPins] = useState<[PinTarget, PinTarget]>(DEFAULT_PIN_RANGE)
   const [colorDialog, setColorDialog] = useState<{ colorId: string | null } | null>(
     null,
@@ -58,6 +70,7 @@ function App() {
   const [barTop, setBarTop] = useState(MIN_BAR_TOP)
   const [showControls, setShowControls] = useState(true)
   const [showHelp, setShowHelp] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const [, setAppliedRange] = useState<TextRange | null>(null)
   const appliedRangeRef = useRef<TextRange | null>(null)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
@@ -67,6 +80,10 @@ function App() {
   const targetTrackRef = useRef<HTMLDivElement>(null)
   const editorStageRef = useRef<HTMLDivElement>(null)
   const targetRange = getTargetRange(pins)
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
 
   function updateAppliedRange(range: TextRange | null) {
     appliedRangeRef.current = range
@@ -93,6 +110,18 @@ function App() {
   )
 
   const updateTitle = (title: string) => updateNote({ title })
+
+  function updateTheme(themePreference: ThemePreference) {
+    setTheme(themePreference)
+    const saveMessage = saveThemePreference(themePreference)
+    if (saveMessage) {
+      setStorageMessage(saveMessage)
+      setStorageWarning(true)
+    } else if (!initialLoad.blocked) {
+      setStorageMessage('Saved in this browser')
+      setStorageWarning(false)
+    }
+  }
 
   function savePaletteColor(hex: string) {
     if (!colorDialog) return
@@ -408,7 +437,10 @@ function App() {
   return (
     <main className="app-shell">
       <header className="app-header">
-        <a className="brand" href="/" aria-label="Granular home">Granular</a>
+        <div className="brand-group">
+          <a className="brand" href="/" aria-label="Granular home">Granular</a>
+          <p className="brand-tagline">Focus on the page. Highlight when you're ready.</p>
+        </div>
         <div className="title-control">
           <label className="visually-hidden" htmlFor="note-title">Note title</label>
           <input
@@ -430,6 +462,17 @@ function App() {
           >
             {storageMessage ?? 'Your note is stored in this browser'}
           </div>
+          <button
+            className="settings-button"
+            type="button"
+            aria-label="Settings"
+            aria-haspopup="dialog"
+            aria-expanded={showSettings}
+            aria-controls="granular-settings-dialog"
+            onClick={() => setShowSettings(true)}
+          >
+            <img src="/devpost/images/settings.svg" alt="" aria-hidden="true" />
+          </button>
           <button
             className="help-button"
             type="button"
@@ -607,6 +650,13 @@ function App() {
         />
       )}
       {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
+      {showSettings && (
+        <SettingsDialog
+          theme={theme}
+          onThemeChange={updateTheme}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </main>
   )
 }
