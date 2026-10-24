@@ -79,6 +79,16 @@ Build mode: fast
   Learner check: With controls visible, use each shortcut outside editable fields/dialogs and verify the correct pin or bar is selected, then move it with unmodified arrow keys. Use Ctrl+Shift+Backslash from a selected pin and confirm it selects the bar. Target a one-character range and a two-pin range, then press Enter with the page or target control focused to apply the active color; confirm Enter still types a newline in the editor and does not apply from the title, other controls, or a dialog. Confirm Ctrl+Shift+Left/Right inside the editor still selects text and that shortcuts are unavailable while controls are hidden; check the documented Control+Shift form on macOS if available.
   Commit: `Add targeting selection shortcuts`
 
+- [x] **8. You can choose and keep an appearance theme**
+  Becomes usable: The header has the small tagline below the Granular name plus a Settings icon before Help, and a centered modal lets the user choose exactly one of the ten requested appearances. The choice applies immediately, remains readable across the editor and controls, and is remembered independently of the note.
+  Why now: The user requested a focused appearance setting after the editor was complete. One end-to-end slice delivers the modal, theme styling, and local persistence together without adding a general settings screen or changing note storage.
+  PRD ref: `prd.md > Screens and Layout`, `prd.md > Theme Settings Extension`
+  Spec ref: `spec.md > Look and Feel`, `spec.md > Components > App Shell`, `spec.md > Settings and Theme Preferences`, `spec.md > Theme Preference Persistence`, `spec.md > Data Model`
+  Build: Add the small tagline without expanding the home-link hit area; add the Settings icon and centered theme modal; implement the ten single-select options and live CSS theme tokens, including OS-following System, readable Dark styling, and the supplied Starry Night and Bench Wood 1 backgrounds. Migrate a previously saved Timberwolf selection to System. Persist the choice in a separate versioned localStorage key, keep note content and palette untouched, and update the app map.
+  Verify (mechanical): Run `npm run build`; confirm the app entry and Settings module load from Vite, and both supplied theme SVG URLs return successfully.
+  Learner check: Open Settings, select each theme and confirm only one is selected, check that text/buttons/icons remain clear in Dark and both image themes, choose System and change the OS light/dark preference if available, then refresh and verify the selected theme persists while the saved note is unchanged.
+  Commit: `Add persistent appearance theme settings`
+
 ## Hands-on Checkpoints
 
 - [x] Early targeting behavior explored — tested both line ends, spaces, punctuation, line changes, and shorter second-line targeting; corrected vertical alignment and stopped out-of-line pins from snapping to a distant final character.
@@ -88,13 +98,15 @@ Build mode: fast
 - [x] Keyboard targeting explored — learner confirmed Left/Right pin targeting and Up/Down bar movement, preserved editor arrows and pointer dragging, and after a fix confirmed pins move inward from both red zones with the bar above or inside the editor.
 - [x] Hide/restore and final demo flow explored — learner confirmed the requested controls hide and restore, Help remains available and explains the new keyboard behavior, and the Lucide buttons retain their actions.
 - [x] Selector shortcuts explored — learner verified left-pin, right-pin, and bar selection, direct switching and arrow movement, Enter-to-apply for one and two characters, normal editor newline behavior, and shortcut disablement while controls are hidden.
+- [x] Theme selection explored — after Timberwolf was removed and the tagline added, the learner retested the revised app and confirmed everything looks right and works; they plan further testing and will report any issues.
+- [ ] Final kick-the-tires review for the theme-settings update completed.
 
 ## Final Review
 
 - [x] Place decrement/increment centered above the moving bar and align the color and None actions in a row to its right.
 - [x] Fit the 1440×667 desktop viewport without page-level scrolling while preserving editor scrolling for longer notes.
 - [x] Center and fit the None and Add pointer bar labels inside their buttons.
-- [x] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
+- [ ] Final review complete — feedback resolved, affected behavior re-verified and re-tried, and learner confirms the proof of concept is ready.
 - [x] Post-5-build iteration review complete — the learner retried arrow targeting (including both red zones), hide/restore, Help, and increment/decrement icons and confirmed the behaviors are working.
 - [x] Selector-shortcut review complete — Chrome on Windows delivered the shifted physical backslash as `key: '|'`, `code: 'IntlBackslash'`; including the bar's track root in target lookup fixed selection, and the learner confirmed switching and movement work.
 - [x] Raise the note title into the centered header and move the editor/control group upward with it, preserving their relative gap; learner confirmed the positions feel right.
@@ -103,15 +115,18 @@ Build mode: fast
 - [x] Highlight inline-code-formatted text without removing its code styling; learner confirmed it works, and schema-level Apply/clear verification showed the code mark remains.
 - [x] Reduce the Granular home link's clickable area to the word with a small margin; learner confirmed the margin feels right and the rest of the app continues working well.
 - [x] Clarify pin line-boundary behavior in Help: Left/Right stays on the current visible line and stops at its first/last character, short lines offer fewer targets, and manual dragging is needed to enter a red end zone; learner confirmed this is intended targeting behavior.
+- [ ] Settings theme behavior verified, learner feedback resolved, and the updated proof of concept confirmed ready.
+- [x] Remove the visually similar Timberwolf theme, migrate an existing Timberwolf preference to System, and add the small non-clickable tagline below the Granular name; the learner retested and confirmed the revised behavior works.
 
 ## Code Tour and App Map
 
 - [x] Learning activity complete — prior-practice recap connected the risky pin-to-character geometry to hands-on targeting checks and the fixes recorded under Revisions.
 - [x] Optional edit and transfer reflection addressed — no extra POC edit was requested; reflection was already covered, so no transfer question was repeated.
 - [x] `devpost/app-map.html` generated from finished code, checked for standalone HTML and working offline links, and shown, including a project-grounded practice to reuse.
-- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, text-sized app-name link, and intentional line-boundary behavior; checked for offline links.
+- [x] `devpost/app-map.html` refreshed for keyboard targeting, selector shortcuts, Enter-to-apply, visibility, raised title/editor layout, responsive targeting performance, text-sized app-name link, intentional line-boundary behavior, separate theme preferences, and the brand tagline; checked for offline links.
 
 Activity and evidence: Fast-mode hands-on checks confirmed keyboard movement, red-zone entry above and inside the editor, mouse/trackpad continuity, hide/restore behavior, Help guidance, icon actions, selector switching, bar movement after keyboard selection, Enter-to-apply, ordinary editor newline behavior, the raised title/editor group, final editor height, smooth long-note scrolling in both directions, inline-code highlighting, and the text-sized home-link target. `npm run build`, Vite module smoke checks, schema-level code-mark checks, and offline app-map link checks passed.
+Theme settings slice mechanical evidence: The revised `npm run build` passed; a focused Node check verified the ten selectable options and migration of a saved Timberwolf preference to System. Vite served the Settings module and all requested SVGs, and relative app-map links resolve. Contrast checks passed for the dark editor, dark modal controls, and image-theme header text. Learner retest confirmed the revised list and tagline look right and work; further testing is planned, so overall final review remains open.
 Route and stops: Updated reference route prepared, not toured interactively — `src/components/TargetBar.tsx > handlePinDown` and `handleSelectorShortcut`; `src/lib/targeting.ts > adjacentCharacterOnLine` and `characterInDirectionAtPoint`; `src/App.tsx > handleApplyShortcut` and `showControls`; `src/components/HelpPanel.tsx`.
 Edit outcome: No optional learning-tour edit; the learner requested the product enhancements and confirmed the resulting interactions work.
 Reflection: Already covered; personal response is recorded only in the ignored learner profile.
@@ -138,6 +153,8 @@ Activity mode: Prior practice/recap.
 - Move the centered note title into the header and raise the editor/control group with it; extend the editor downward by 100px total from the prior layout while retaining caption spacing — learner testing approved the title/group alignment and confirmed the final editor height is comfortable without page scrolling.
 - Keep the targeting bar and editor content moving together through overflow — learner reported the bar stops at the fixed editor viewport bottom and requested automatic editor scrolling with the bar repositioned near the top to continue reading/highlighting without separately operating the scrollbar.
 - Refine overflow scrolling after learner testing — the bar obscured the target line after a scroll, and moving focus to the editor disabled the bar. Keep the target line below the pin tip, leave the bar selected during forward auto-scroll, and retain that selection when Page Up focuses the editor scroller; couple the bar's upward movement with backward scrolling, then return focus to the selected bar on key release. Reversal remains user-triggered, never automatic at note end.
+- Remove Timberwolf after learner testing found it visually similar to another theme; migrate an already-saved Timberwolf choice to System. Add “Focus on the page. Highlight when you're ready.” below the brand in smaller, non-clickable text so the Granular home link keeps its narrow target.
+- Revised appearance-settings retest passed — the learner confirmed the Timberwolf removal, tagline, and updated app look right and work; they will continue testing and report any later issues.
 - Allow highlights on inline code — Tiptap's default Code mark excludes every other mark; use a custom exclusion list so Granular highlights can coexist while inline code styling remains intact.
 - Improve sustained targeting responsiveness by caching grapheme segmentation per text node, limiting character lookup to a nearby range, and skipping redundant pin updates; learner testing confirmed sustained movement remains smooth.
 - Constrain the Granular home link to its text-sized hit area after the learner reported that the stretched grid link could trigger an accidental page refresh; production build passed and the learner confirmed the resulting small margin feels right.

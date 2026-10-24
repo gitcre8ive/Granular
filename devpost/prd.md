@@ -23,7 +23,7 @@ Granular is a local note editor designed for precise, low-friction text highligh
 
 Granular is intentionally a single-screen editor for this proof of concept.
 
-- Header: the Granular home link at the left, centered note-title field with placeholder “Untitled …”, storage status, and Help at the right. Keep the link hit area to the word and a small margin so nearby header clicks do not refresh the page. On narrow screens, the header may wrap while keeping the title centered and controls usable.
+- Header: the Granular name and its small tagline “Focus on the page. Highlight when you're ready.” at the left, centered note-title field with placeholder “Untitled …”, storage status, and Settings followed by Help at the right. Only the Granular name is a home link; keep its hit area to the name and a small margin. On narrow screens, the header may wrap while keeping the title centered and controls usable.
 - Center: a large text editor box sized to allow comfortable reading and editing of a short note. It should use more of the available viewport height while keeping the guidance caption beneath it visibly above the bottom edge.
 - Above the editor box at rest: a horizontal target bar spanning most of the editor width, with two control pins descending from it. The user can drag the bar down into the box and align the pin tips just above a text line.
 - Keep the editor box and targeting controls close beneath the header title field; moving the title into the header raises the editor and control group together without changing their relative spacing.
@@ -127,11 +127,12 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - Local persistence of the note content and title, storing the latest version of the active note.
 - Invalid-range guidance instead of an unpredictable “do nothing” state.
 - Help guidance accessible from the top-right area of the editor.
+- A centered Settings modal with a mutually exclusive theme selector. System is the default and follows the operating system; the selected theme is remembered locally.
 
 ## Deferred From the POC
 
 - Dedicated read-only note view.
-- Settings screen.
+- General settings screen beyond the focused theme modal.
 - Trash screen and any restoration flow.
 - Notes selection, list/grid organization, batch editing, or deletion.
 - Permanent deletion and expiry rules.
@@ -149,7 +150,7 @@ Granular is intentionally a single-screen editor for this proof of concept.
 
 - A full document-management app with folders, organization systems, and multi-note workflows.
 - Full trash and restore logic for many notes.
-- Read-only review and settings screens during the prototype.
+- Read-only review and general settings screens during the prototype.
 - Rich collaboration or sync features.
 
 ## Open Questions
@@ -159,6 +160,17 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - The instruction prompt should be replaced by a Help area in the top-right, with quick guidance for the user instead of a temporary message.
 - Local persistence is a single active note state for the prototype, storing the latest version of the note in browser storage and preserving the last edited version after refresh.
 - These are resolved enough to proceed into the technical spec without changing the core proof-of-concept boundary.
+
+## Theme Settings Extension
+
+Add a focused appearance preference without adding a general settings screen or changing the note-management boundary.
+
+- Place the supplied Settings icon button immediately before Help at the top-right. Keep the “Saved in this browser” status text to its left.
+- Clicking Settings opens a modal centered in the viewport. It offers exactly one selected theme at a time, and selecting another immediately applies it and deselects the prior theme.
+- The choices are System (default; follows the current OS light/dark preference), Dark, Light Skin (#fdf5e2), Pastel Pink (#ffdee2), Mint Green (#9fcdb1), Light Cream (#e5e3d9), Almond (#EDE0D4), Light Cyan (#e3ffff), Starry Night (use `devpost/images/starry-night.svg`), and Bench Wood 1 (use `devpost/images/bench-wood-1.svg`). Do not include Timberwolf (#dad7cd), which the learner found visually similar to another theme.
+- Show the small tagline “Focus on the page. Highlight when you're ready.” below Granular at the left of the header. Keep the tagline outside the home link so clicking it does not refresh the page.
+- Dark and image-backed themes must keep text, editor surfaces, buttons, icons, dialogs, borders, and focus indicators legible and distinguishable. Themes are an appearance choice only; they do not alter note or highlight data.
+- Persist the selected theme locally in a separate preference record, independently of the note. Do not add accounts, synchronization, or a notes library.
 
 ## Post-5-build Iteration Requirements
 
