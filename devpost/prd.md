@@ -91,6 +91,7 @@ Granular is intentionally a single-screen editor for this proof of concept.
 - Instead, the user sees a clear instruction: drag the bar to the text, target the start and end characters, or leave a single pin active to highlight a single character.
 - This prompt should be concise, visible, and directly actionable.
 - A Help panel or Help button should explain the bar, pins, range behavior, and the None/clear action so the user can learn the interaction without much trial and error.
+- Help begins with note-entry guidance covering paste, paragraphs versus line breaks, bold, italics, underline, and inline code; it retains the existing targeting instructions and ends with the project description and feedback contact. The editor caption directs users to set a range, use the apply button, and find keyboard shortcuts in Help.
 
 ## States and Boundaries
 

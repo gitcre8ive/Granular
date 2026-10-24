@@ -61,3 +61,7 @@ The previous cut of the hide-pointer-bar/eye control remains as planning history
 Add a focused Settings modal for choosing the app's appearance, without adding a general settings screen or notes library. The available mutually exclusive choices are System (the default and follows the operating system), Dark, Light Skin (#fdf5e2), Pastel Pink (#ffdee2), Mint Green (#9fcdb1), Light Cream (#e5e3d9), Almond (#EDE0D4), Light Cyan (#e3ffff), Starry Night (the supplied `starry-night.svg`), and Bench Wood 1 (the supplied `bench-wood-1.svg`). Save the selected appearance locally in this browser. Keep editor text, buttons, icons, dialogs, and focus indicators readable against each theme.
 
 The brand area also includes the small, non-clickable tagline “Focus on the page. Highlight when you're ready.” beneath the Granular name; the home link remains limited to the name.
+
+## Help and Editor Guidance Update
+
+Expand Help with the requested note-entry and formatting guidance, retain the existing highlighting and keyboard instructions in their new numbered order, and add future-feature and learner-feedback information. Update the editor caption to point users to range selection, the color button, and the Help shortcuts. This clarifies existing editor behavior without changing the highlighting workflow.

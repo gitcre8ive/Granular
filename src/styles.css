@@ -864,6 +864,7 @@ input:focus-visible {
 }
 
 .editor-caption {
+  width: calc(100% - 112px);
   margin: 10px 0 0;
   color: var(--muted);
   font-size: 0.82rem;
@@ -977,6 +978,10 @@ input:focus-visible {
 
   .target-track-area,
   .editor-stage {
+    width: calc(100% - 102px);
+  }
+
+  .editor-caption {
     width: calc(100% - 102px);
   }
 }
